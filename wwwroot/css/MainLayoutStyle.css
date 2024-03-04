@@ -1,0 +1,235 @@
+﻿:root{
+    --btn-background:rgb(240,240,240);
+}
+
+
+.main-header {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    background-color: rgba(255,255,255,0);
+    font-size: 20px;
+    user-select: none;
+}
+
+.header-container {
+    display: grid;
+    grid-template-columns: [first] auto [line2] 300px [line3] auto;
+    align-items: center;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin: 0px 10px;
+}
+
+.bottom-border {
+    border-bottom: 1.5px solid;
+    border-color: rgb(230,230,230);
+}
+
+.top-border {
+    border-top: 1.5px solid;
+    border-color: rgb(230,230,230);
+}
+
+.header-container-small {
+    display: grid;
+    grid-template-columns: [first] auto [line2] auto;
+    border-bottom: 1.5px solid;
+    border-color: rgb(230,230,230);
+    align-items: center;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin: 0px 10px;
+}
+
+.kamran-title {
+    font-size: 40px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.menu-bar {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    vertical-align: central;
+    text-align: center;
+}
+
+.place-order {
+    color: dodgerblue;
+    margin:5px;
+}
+
+.place-order-hover:hover {
+    animation-name: OrderPlaceBigger;
+    animation-duration: 0.25s;
+    transform: scale(1.05);
+}
+
+.place-order-not-hover:not(:hover) {
+    animation-name: OrderPlaceSmaller;
+    animation-duration: 0.25s;
+}
+
+@keyframes OrderPlaceBigger{
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes OrderPlaceSmaller {
+    from {
+        transform: scale(1.05);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.place-order:active {
+    transform: scale(1);
+}
+
+.round-button {
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.round-button-inside{
+    padding:0px 7px;
+}
+
+.round-button-inside:hover{
+    color:dodgerblue;
+}
+
+.round-button-hover {
+    animation-name: GettingBigger;
+    animation-duration: 0.25s;
+    transform: scale(1.05);
+    background-color: var(--btn-background);
+}
+.round-button-not-hover {
+    animation-name: GettingSmaller;
+    animation-duration: 0.25s;
+    transform: scale(1);
+    background-color: white;
+}
+
+
+@keyframes GettingBigger{
+    from {
+        transform: scale(1);
+        background-color: white;
+    }
+    to {
+        transform: scale(1.05);
+        background-color: var(--btn-background);
+    }
+}
+
+@keyframes GettingSmaller{
+    from {
+        transform: scale(1.05);
+        background-color: var(--btn-background);
+    }
+    to {
+        transform: scale(1);
+        background-color: white;
+    }
+}
+
+.round-button:active {
+    transform: translate(0px, 1px);
+    -webkit-transform: translate(0px, 1px);
+}
+
+.menu-bar-button {
+    display: none;
+    height: 35px;
+    width: 49px;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color:rgb(230,230,230);
+    border-style:solid;
+    background-color: rgb(140,200,255);
+    float: right;
+    background: url(/lib/images/MenuButton.png) no-repeat;
+    background-position:center;
+}
+
+.menu-bar-button:active{
+    border-width: 3px;
+    border-color:rgb(180,180,180);
+}
+
+.text-or-button {
+    text-align: right;
+}
+
+.drop-down-menu {
+    display: grid;
+    grid-template-columns: auto;
+    border-width: 1px;
+    border-color: rgb(230,230,230);
+    border-radius: 5px;
+    border-style: solid;
+    text-align: right;
+    width: 180px;
+    padding: 10px;
+    z-index: 1;
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    background-color: white;
+}
+
+.scale-zero {
+    transform: scale(0);
+}
+.fade-in{
+    animation-name:FadeIn;
+    animation-duration:0.25s;
+    transform:scale(1);
+}
+
+.fade-out {
+    animation-name: FadeOut;
+    animation-duration: 0.25s;
+    transform:scale(0);
+}
+
+@keyframes FadeIn{
+    from{transform:scale(0);}
+    to{transform:scale(1);}
+}
+
+@keyframes FadeOut{
+    from{transform:scale(1);}
+    to{transform:scale(0);}
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: [first] auto [line2] auto [line3] auto;
+    align-items: center;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin: 0px 10px;
+}
+
+.contact-section {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-start: 3;
+    font-size: 15px;
+    color:gray;
+    text-align:center;
+}
+
+.copy-right {
+    font-size: 15px;
+    color: gray;
+}
