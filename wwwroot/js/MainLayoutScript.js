@@ -30,7 +30,7 @@ function MenuBarButton() {
  * to change the NavBar apearance accordingly
  */
 function OnResize() {
-    if (window.innerWidth < 650) { ChangeNavbarAppearance(false); }
+    if (window.innerWidth < 700) { ChangeNavbarAppearance(false); }
     else { ChangeNavbarAppearance(true); }
 }
 
