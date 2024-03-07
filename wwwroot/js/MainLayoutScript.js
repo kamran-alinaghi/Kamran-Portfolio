@@ -26,7 +26,7 @@ function MenuBarButton() {
     });
 }
 /**
- * When the width of the window changes, if it gets smaller than 650, it calls the ChangeNavbarAppearance(bigger) 
+ * When the width of the window changes, if it gets smaller than 700, it calls the ChangeNavbarAppearance(bigger) 
  * to change the NavBar apearance accordingly
  */
 function OnResize() {
@@ -37,7 +37,7 @@ function OnResize() {
 
 /**
  * Changes the appearance of the NavBar in the header based on the width of the window
- * @param bigger    (boolean):              A boolean that specifies if the Nav Bar is getting bigger (true) or smaller (flase)
+ * @param {boolean} bigger              A boolean that specifies if the Nav Bar is getting bigger (true) or smaller (flase)
  */
 function ChangeNavbarAppearance(bigger) {
     const container = document.getElementById("headerContainer");
@@ -58,9 +58,9 @@ function ChangeNavbarAppearance(bigger) {
 
 /**
  * Checks whether the given element contains the class or not, then adds or removes it accordingly
- *@param elem            (HTMLElement):      A dom element that is supposed to add/remove a class to/from it
- *@param classString     (string):           A string that specifies the name of the class to add or remove 
- *@param IsAdd           (boolean):          A boolean that specifies to add or remove
+ *@param {HTMLElement}  elem            A dom element that is supposed to add/remove a class to/from it
+ *@param {string}       classString     A string that specifies the name of the class to add or remove 
+ *@param {boolean}      IsAdd           A boolean that specifies to add or remove
 */
 function AddOrRemoveClass(elem, classString, IsAdd = true) {
     if (IsAdd) {

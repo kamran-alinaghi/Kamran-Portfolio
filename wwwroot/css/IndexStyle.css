@@ -1,0 +1,54 @@
+﻿body{
+    font-family:Arial;
+}
+.exceptional-title {
+    display: grid;
+    grid-template-columns: auto;
+    font-size: 5vw;
+    text-align: center;
+    font-weight: bold;
+    font-family: Gabriola;
+    background-image: linear-gradient(to top right,rgb(0,5,50), dodgerblue);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    padding: 3vw 0px;
+    user-select:none;
+}
+
+.inside-title {
+    height: 6vw;
+}
+
+.long-container {
+    height: 200vh;
+    background-color: white;
+    padding: 4vw;
+    margin:4vw;
+}
+
+.title-details {
+    color: rgb(150,150,150);
+    font-size: 1.5vw;
+    text-align: center;
+    padding: 0px 15vw;
+    user-select: none;
+}
+
+.small-screen-frame {
+    height: 40vh;
+    width: 80vw;
+    background-color: black;
+    z-index: 1;
+    position: static;
+    border-radius:1vw;
+}
+
+.small-screen {
+    background-color:aqua;
+    border-radius:0.2vw;
+    margin:20px;
+    position:relative;
+    top:20px;
+}
