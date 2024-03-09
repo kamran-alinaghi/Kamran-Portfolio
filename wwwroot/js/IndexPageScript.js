@@ -17,31 +17,24 @@ addEventListener("scroll", function () { return SmallScreen(); });
  * This method runs 40 times per second to check the scroll bar position and position the small screen accordingly.
  */
 function SmallScreen() {
-    smallScreen.innerHTML = "inner height: " + window.innerHeight +
-        "<br>top rect: " + smallScreenFrame.getBoundingClientRect().top +
-        "<br>inner width: " + window.innerWidth +
-        "<br>top padding: " + topPadding +
-        "<br>small screen height: " + smallScreenFrame.getBoundingClientRect().height;
+    //smallScreen.innerHTML = "inner height: " + window.innerHeight +
+    //    "<br>top rect: " + smallScreenFrame.getBoundingClientRect().top +
+    //    "<br>inner width: " + window.innerWidth +
+    //    "<br>top padding: " + topPadding +
+    //    "<br>small screen height: " + smallScreenFrame.getBoundingClientRect().height;
     if (smallScreenContainer.getBoundingClientRect().top < topPadding) {
         if (!IsTopPassed) {
             smallScreenFrame.style.position = "fixed";
             smallScreenFrame.style.top = window.innerWidth * 0.04 + topPadding + "px";
-            smallScreen.style.position = "static";
             IsTopPassed = true;
         }
     }
     else {
         if (IsTopPassed) {
             smallScreenFrame.style.position = "static";
-            smallScreen.style.position = "relative";
-            smallScreen.style.top = "20px";
             IsTopPassed = false;
         }
     }
-
-    //if (smallScreenFrame.getBoundingClientRect().bottom > topPadding + smallScreenContainer.getBoundingClientRect().height + smallScreenContainer.getBoundingClientRect().top) {
-
-    //}
 }
 
 OnResize();

@@ -22,7 +22,7 @@
 }
 
 .long-container {
-    height: 200vh;
+    height: 600vh;
     background-color: white;
     padding: 4vw;
     margin:4vw;
@@ -46,9 +46,20 @@
 }
 
 .small-screen {
-    background-color:aqua;
-    border-radius:0.2vw;
-    margin:20px;
+    border-radius: 0.2vw;
+    position: relative;
+    top: 20px;
+    left: 20px;
+    background-image: url("../lib/images/Small-Screen-Background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.sliding-geid{
+    display:grid;
+    grid-template-columns:auto auto auto;
     position:relative;
-    top:20px;
+    background-color:rgba(182, 255, 0,0.3);
+    top:100px;
+    left:-50px;
 }
