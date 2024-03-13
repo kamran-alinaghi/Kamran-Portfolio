@@ -2,7 +2,55 @@
     ViewData["Title"] = "Privacy Policy";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
-<p id="t"></p>
+<style>
+    .t1{
+        background-color:bisque;
+        width:90vw;
+        height:50vh;
+        margin-top:15vh;
+    }
+
+    .t2{
+        width: 45vw;
+        height: 45vh;
+        background-color: rgba(0,0,0,0);
+        position:absolute;
+        z-index: 10;
+        border-radius: 20px;
+        border-color: darkblue;
+        border-width: 30px 300px 30px 300px;
+        border-style: solid;
+        left: 0;
+    }
+
+    .t3{
+        width:30vw;
+        height:30vh;
+        background-color:aqua;
+        position:relative;
+        top:50px;
+        left:300px;
+    }
+</style>
+
+
+<div class="t1">
+    <div class="t2">
+
+    </div>
+    <div id="f" class="t3">
+
+    </div>
+</div>
+
+
+<script>
+    let w = 500;
+    const txx = setInterval(SmallScreen, 25);
+    const dd = document.getElementById("f");
+    function SmallScreen() {
+        dd.style.left = w + "px";
+        w--;
+    }
+</script>

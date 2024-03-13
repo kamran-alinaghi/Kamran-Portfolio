@@ -1,6 +1,22 @@
 ﻿body{
     font-family:Arial;
+    overflow-x:hidden;
 }
+
+.whole-wrap {
+    display: grid;
+    grid-template-columns: 100vw;
+    position:relative;
+    top: 42px;
+    left: -8px;
+    width:100vw;
+}
+
+.title-container {
+    background-color: rgba(0,255,0,0.5);
+    height: 40vw;
+}
+
 .exceptional-title {
     display: grid;
     grid-template-columns: auto;
@@ -14,7 +30,7 @@
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
     padding: 3vw 0px;
-    user-select:none;
+    user-select: none;
 }
 
 .inside-title {
@@ -23,9 +39,8 @@
 
 .long-container {
     height: 600vh;
-    background-color: white;
-    padding: 4vw;
-    margin:4vw;
+    background-color: bisque;
+    top:0px;
 }
 
 .title-details {
@@ -38,28 +53,39 @@
 
 .small-screen-frame {
     height: 40vh;
-    width: 80vw;
-    background-color: black;
-    z-index: 1;
-    position: static;
-    border-radius:1vw;
+    background-color: rgba(0,0,0,0);
+    z-index: 5;
+    position: absolute;
+    border-width: 20px 10vw;
+    border-style: solid;
+    border-color: blue;
+    left: 0px;
 }
 
-.small-screen {
-    border-radius: 0.2vw;
-    position: relative;
-    top: 20px;
-    left: 20px;
+.black-frame {
+    border-color: black;
+    border-radius: 20px;
+    border-style:solid;
+    border-width:20px;
+    position:absolute;
+    z-index:6;
+}
+
+.screen-background {
+    position: absolute;
+    z-index: 0;
     background-image: url("../lib/images/Small-Screen-Background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-.sliding-geid{
-    display:grid;
-    grid-template-columns:auto auto auto;
-    position:relative;
-    background-color:rgba(182, 255, 0,0.3);
-    top:100px;
-    left:-50px;
+.sliding-geid {
+    height: 200px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    position: absolute;
+    background-color: rgba(182, 255, 0,1);
+    top: 700px;
+    left: 0px;
+    z-index: 2;
 }
