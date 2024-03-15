@@ -17,12 +17,12 @@ let swichPoint = 0;
 const OnWidthChange = 750;
 let slidingValue = window.innerWidth / 2;
 
-addEventListener("resize", function () { return OnResize(); });
-addEventListener("scroll", function () { return SmallScreen(); });
+window.onload = function () { setTimeout(MyOnResize, 1) };
+window.onresize = MyOnResize;
+window.onscroll = SmallScreen;
+setTimeout(MyOnResize, 2);
 
-OnResize();
-//const t = setInterval(SmallScreen, 25);
-//title.addEventListener("click", function () { window.location.replace("home/privacy"); });
+//title.addEventListener("click", function () { setTimeout(MyOnResize, 1); });
 
 /**
  * This method runs 40 times per second to check the scroll bar position and position the small screen accordingly.
@@ -44,12 +44,14 @@ function SmallScreen() {
 
             blackFrame.style.position = "fixed";
             blackFrame.style.top = topPadding + "px";
+            blackFrame.style.left = 0.1 * window.innerWidth - 20 + "px";
 
             screenBackground.style.position = "fixed";
             screenBackground.style.top = topPadding + 20 + "px";
+            screenBackground.style.left = 0.1 * window.innerWidth + "px";
 
             slidingGrid.style.position = "fixed";
-            slidingGrid.style.left = window.innerWidth / 2 + "px";
+            slidingGrid.style.left = "0px";
             slidingGrid.style.top = topPadding + 20 + 0.2 * slidingHeigth + "px";
 
             IsTopPassed = true;
@@ -58,28 +60,28 @@ function SmallScreen() {
     }
     else {
         if (IsTopPassed) {
-            smallScreenFrame.style.position = "absolute";
+            smallScreenFrame.style.position = "relative";
             smallScreenFrame.style.left = "0px";
-            smallScreenFrame.style.top = topAbsolute + "px";
+            smallScreenFrame.style.top = "0px";
 
-            blackFrame.style.position = "absolute";
-            blackFrame.style.left = 0.1 * window.innerWidth - 20 + "px";
-            blackFrame.style.top = topAbsolute + "px";
+            blackFrame.style.position = "relative";
+            blackFrame.style.left = "-20px";
+            blackFrame.style.top = "-20px";
 
-            screenBackground.style.position = "absolute";
-            screenBackground.style.left = 0.1 * window.innerWidth + "px";
-            screenBackground.style.top = topAbsolute + 20 + "px";
+            screenBackground.style.position = "relative";
+            screenBackground.style.left = "0px";
+            screenBackground.style.top = "0px";
 
-            slidingGrid.style.position = "absolute";
-            slidingGrid.style.left = window.innerWidth / 2 + "px";
-            slidingGrid.style.top = topAbsolute + 20 + 0.2 * slidingHeigth + "px";
+            slidingGrid.style.position = "relative";
+            slidingGrid.style.left = "0px";
+            slidingGrid.style.top = "20px";
 
             IsTopPassed = false;
         }
     }
 }
 
-function OnResize() {
+function MyOnResize() {
     if (window.innerWidth < OnWidthChange) {
         titleContainer.style.height = 0.4 * OnWidthChange + "px";
         title.style.fontSize = 0.05 * OnWidthChange + "px";
@@ -98,25 +100,26 @@ function OnResize() {
     smallScreenFrame.style.width = window.innerWidth * 0.8 + "px";
     smallScreenFrame.style.borderWidth = "20px " + window.innerWidth * 0.1 + "px";
     smallScreenFrame.style.height = (window.innerHeight - window.innerWidth * 0.08 - 40) + "px";
-    smallScreenFrame.style.top = topAbsolute + "px";
+    smallScreenFrame.style.top = "0px";
 
     blackFrame.style.width = window.innerWidth * 0.8 - 1 + "px";
     blackFrame.style.height = (window.innerHeight - window.innerWidth * 0.08 - 40) + "px";
-    blackFrame.style.top = topAbsolute + "px";
-    blackFrame.style.left = 0.1 * window.innerWidth - 20 + "px";
+    blackFrame.style.left = "-20px";
+    blackFrame.style.top = "-20px";
 
     screenBackground.style.width = window.innerWidth * 0.8 + "px";
     screenBackground.style.height = (window.innerHeight - window.innerWidth * 0.08 - 40) + "px";
-    screenBackground.style.top = topAbsolute + 20 + "px";
-    screenBackground.style.left = 0.1 * window.innerWidth + "px";
+    screenBackground.style.left = "0px";
+    screenBackground.style.top = "0px";
 
     const slidingHeigth = (window.innerHeight - window.innerWidth * 0.08 - 40);
-    //slidingGrid.style.width = 2 * window.innerWidth + "px";
+    slidingGrid.style.width = window.innerWidth * 2 + "px";
     slidingGrid.style.height = 0.6 * slidingHeigth + "px";
-    slidingGrid.style.top = topAbsolute + 20 + 0.2 * slidingHeigth + "px";
-    slidingGrid.style.left = window.innerWidth / 2 + "px";
+    slidingGrid.style.top = "20px";
+    slidingGrid.style.left = "0px";
 
     topPadding = (window.innerHeight - smallScreenFrame.getBoundingClientRect().height) / 2;
+    SmallScreen();
 }
 
 /**

@@ -1,15 +1,15 @@
-﻿body{
-    font-family:Arial;
-    overflow-x:hidden;
+﻿body {
+    font-family: Arial;
+    overflow-x: hidden;
 }
 
 .whole-wrap {
     display: grid;
     grid-template-columns: 100vw;
-    position:relative;
+    position: relative;
     top: 42px;
     left: -8px;
-    width:100vw;
+    width: 100vw;
 }
 
 .title-container {
@@ -40,7 +40,7 @@
 .long-container {
     height: 600vh;
     background-color: bisque;
-    top:0px;
+    top: 0px;
 }
 
 .title-details {
@@ -52,10 +52,9 @@
 }
 
 .small-screen-frame {
-    height: 40vh;
     background-color: rgba(0,0,0,0);
     z-index: 5;
-    position: absolute;
+    position: relative;
     border-width: 20px 10vw;
     border-style: solid;
     border-color: blue;
@@ -65,17 +64,16 @@
 .black-frame {
     border-color: black;
     border-radius: 20px;
-    border-style:solid;
-    border-width:20px;
-    position:absolute;
-    z-index:6;
+    border-style: solid;
+    border-width: 20px;
+    position: relative;
+    z-index: 6;
 }
 
 .screen-background {
-    position: absolute;
-    z-index: 0;
+    position: relative;
+    z-index: 1;
     background-image: url("../lib/images/Small-Screen-Background.jpg");
-    background-size: cover;
     background-repeat: no-repeat;
 }
 
@@ -83,8 +81,8 @@
     height: 200px;
     display: grid;
     grid-template-columns: auto auto auto;
-    position: absolute;
-    background-color: rgba(182, 255, 0,1);
+    position: relative;
+    background-color: rgba(182, 255, 0, 1);
     top: 700px;
     left: 0px;
     z-index: 2;
