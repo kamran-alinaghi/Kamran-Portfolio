@@ -2,20 +2,22 @@
     ViewData["Title"] = "Privacy Policy";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
-
+<head>
+    <script src="jquery-3.7.1.min.js"></script>
+</head>
 <style>
-    .t1{
-        background-color:bisque;
-        width:90vw;
-        height:50vh;
-        margin-top:15vh;
+    .t1 {
+        background-color: bisque;
+        width: 90vw;
+        height: 50vh;
+        margin-top: 15vh;
     }
 
-    .t2{
+    .t2 {
         width: 45vw;
         height: 45vh;
         background-color: rgba(0,0,0,0);
-        position:absolute;
+        position: absolute;
         z-index: 10;
         border-radius: 20px;
         border-color: darkblue;
@@ -24,33 +26,39 @@
         left: 0;
     }
 
-    .t3{
-        width:30vw;
-        height:30vh;
-        background-color:aqua;
-        position:relative;
-        top:50px;
-        left:300px;
+    .t3 {
+        width: 30vw;
+        height: 30vh;
+        background-color: aqua;
+        position: relative;
+        top: 50px;
+        left: 300px;
+    }
+
+    .t4 {
+        background-image: url( "../lib/images/Small-Screen-Background.jpg" );
     }
 </style>
 
 
-<div class="t1">
-    <div class="t2">
+<svg id="svgt" class="t1">
+    <defs>
+        <pattern id="img1" patternUnits="userSpaceOnUse" width="500" height="300">
+            <image href="../lib/images/Small-Screen-Background.jpg" x="20" y="10" width="500" height="300" preserveAspectRatio="none" />
+        </pattern>
+    </defs>
+    @* <rect width="500" height="300" x="20" y="10" rx="0" ry="0" fill="url(#img1)" >
 
-    </div>
-    <div id="f" class="t3">
-
-    </div>
-</div>
-
+    </rect> *@
+    <image id="img3" href="../lib/images/Small-Screen-Background.jpg" x="0" y="10" width="500" height="150" preserveAspectRatio="none" />
+</svg>
 
 <script>
-    let w = 500;
-    const txx = setInterval(SmallScreen, 25);
-    const dd = document.getElementById("f");
-    function SmallScreen() {
-        dd.style.left = w + "px";
-        w--;
+    const img = document.getElementById("img3");
+    const asss = setInterval(moveO, 25);
+    let num = 0;
+    function moveO() {
+        img.setAttribute("x", num);
+        num++;
     }
 </script>

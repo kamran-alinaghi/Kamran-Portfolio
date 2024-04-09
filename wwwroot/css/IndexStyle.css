@@ -13,7 +13,7 @@
 }
 
 .title-container {
-    background-color: rgba(0,255,0,0.5);
+    /*background-color: rgba(0,255,0,0.5);*/
     height: 40vw;
 }
 
@@ -39,8 +39,14 @@
 
 .long-container {
     height: 600vh;
-    background-color: bisque;
+    /*background-color: bisque;*/
     top: 0px;
+    vertical-align: central;
+}
+
+.same-Layer {
+    grid-column: 1;
+    grid-row: 1;
 }
 
 .title-details {
@@ -51,39 +57,33 @@
     user-select: none;
 }
 
-.small-screen-frame {
-    background-color: rgba(0,0,0,0);
-    z-index: 5;
-    position: relative;
-    border-width: 20px 10vw;
-    border-style: solid;
-    border-color: blue;
-    left: 0px;
-}
-
 .black-frame {
     border-color: black;
     border-radius: 20px;
     border-style: solid;
     border-width: 20px;
     position: relative;
-    z-index: 6;
+    z-index:0;
 }
 
-.screen-background {
+.inside-video {
     position: relative;
-    z-index: 1;
-    background-image: url("../lib/images/Small-Screen-Background.jpg");
-    background-repeat: no-repeat;
+    box-shadow: 0px 0px 10px white;
 }
 
-.sliding-geid {
-    height: 200px;
-    display: grid;
-    grid-template-columns: auto auto auto;
-    position: relative;
-    background-color: rgba(182, 255, 0, 1);
-    top: 700px;
-    left: 0px;
-    z-index: 2;
+.blur-me {
+    /*-webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);*/
+    filter: blur(5px);
+    opacity:0.5;
+}
+
+.top-layer{
+    z-index:1;
+    background-color:aqua;
+    position:relative;
+    filter:blur(100px);
+    opacity:0;
 }
