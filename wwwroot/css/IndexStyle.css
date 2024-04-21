@@ -63,7 +63,7 @@
     border-style: solid;
     border-width: 20px;
     position: relative;
-    z-index:0;
+    z-index: 0;
 }
 
 .inside-video {
@@ -77,13 +77,294 @@
     -o-filter: blur(5px);
     -ms-filter: blur(5px);*/
     filter: blur(5px);
-    opacity:0.5;
+    opacity: 0.5;
 }
 
-.top-layer{
-    z-index:1;
-    background-color:aqua;
-    position:relative;
-    filter:blur(100px);
-    opacity:0;
+.top-layer {
+    z-index: 1;
+    /*background-color: aqua;*/
+    position: relative;
+    filter: blur(100px);
+    opacity: 0;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.stick-paper {
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+    width: 70%;
+    max-width: 400px;
+    height: 70%;
+    box-shadow: 0px 0px 20px rgb(0,0,100);
+    opacity: 0;
+}
+
+.opacity-to-ziro {
+    animation-name: OpacityB0;
+    animation-duration: 1s;
+}
+
+.opacity-to-one {
+    animation-name: Opacity0;
+    animation-duration: 1s;
+}
+
+.five-degree {
+    animation-name: Rotate5;
+    animation-duration: 1s;
+}
+
+.five-degree-backward {
+    animation-name: RotateB5;
+    animation-duration: 1s;
+}
+
+.ten-degree {
+    animation-name: Rotate10;
+    animation-duration: 1s;
+}
+
+.ten-degree-backward {
+    animation-name: RotateB10;
+    animation-duration: 1s;
+}
+
+:root {
+    --anim-start-deg-0: 0deg;
+    --anim-end-deg-0: -5deg;
+
+    --anim-start-deg-1: 0deg;
+    --anim-end-deg-1: -5deg;
+
+    --anim-start-deg-2: 0deg;
+    --anim-end-deg-2: -5deg;
+
+    --anim-start-deg-3: 0deg;
+    --anim-end-deg-3: -5deg;
+
+    --anim-start-deg-4: 0deg;
+    --anim-end-deg-4: -5deg;
+}
+
+.rotate-0{
+    animation-name:Rotate0;
+    animation-duration:1s;
+}
+
+.rotate-0-alt {
+    animation-name: Rotate0alt;
+    animation-duration: 1s;
+}
+
+.rotate-1 {
+    animation-name: Rotate1;
+    animation-duration: 1s;
+}
+
+.rotate-1-alt {
+    animation-name: Rotate1alt;
+    animation-duration: 1s;
+}
+
+.rotate-2 {
+    animation-name: Rotate2;
+    animation-duration: 1s;
+}
+
+.rotate-2-alt {
+    animation-name: Rotate2alt;
+    animation-duration: 1s;
+}
+
+.rotate-3 {
+    animation-name: Rotate3;
+    animation-duration: 1s;
+}
+
+.rotate-3-alt {
+    animation-name: Rotate3alt;
+    animation-duration: 1s;
+}
+
+.rotate-4 {
+    animation-name: Rotate4;
+    animation-duration: 1s;
+}
+
+.rotate-4-alt {
+    animation-name: Rotate4alt;
+    animation-duration: 1s;
+}
+
+@keyframes Rotate0 {
+    from {
+        rotate: var(--anim-start-deg-0);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-0);
+    }
+}
+
+@keyframes Rotate0alt {
+    from {
+        rotate: var(--anim-start-deg-0);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-0);
+    }
+}
+
+@keyframes Rotate1{
+    from {
+        rotate: var(--anim-start-deg-1);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-1);
+    }
+}
+
+@keyframes Rotate1alt {
+    from {
+        rotate: var(--anim-start-deg-1);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-1);
+    }
+}
+
+@keyframes Rotate2 {
+    from {
+        rotate: var(--anim-start-deg-2);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-2);
+    }
+}
+
+@keyframes Rotate2alt {
+    from {
+        rotate: var(--anim-start-deg-2);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-2);
+    }
+}
+
+@keyframes Rotate3 {
+    from {
+        rotate: var(--anim-start-deg-3);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-3);
+    }
+}
+
+@keyframes Rotate3alt {
+    from {
+        rotate: var(--anim-start-deg-3);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-3);
+    }
+}
+
+@keyframes Rotate4 {
+    from {
+        rotate: var(--anim-start-deg-4);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-4);
+    }
+}
+
+@keyframes Rotate4alt {
+    from {
+        rotate: var(--anim-start-deg-4);
+    }
+
+    to {
+        rotate: var(--anim-end-deg-4);
+    }
+}
+
+@keyframes OpacityB0 {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes Opacity0 {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.buttons-wrap {
+    width: 60vw;
+    max-width: 700px;
+    min-width: 100px;
+    height: 50px;
+    max-height: 100px;
+    background-color: white;
+    margin: 0px auto;
+    position: relative;
+    top: -100px;
+    /*box-shadow: 0px 0px 10px rgb(200,200,200);*/
+    border-radius:10px;
+    display:grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.dash-button-wrap {
+    width:100%;
+    height:100%;
+}
+
+.dash-button-wrap:hover {
+    animation-name: PageButton;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+.dash-button{
+    background-color:blueviolet;
+    width:60%;
+    height:10px;
+    border-radius:5px;
+    margin:20px auto;
+}
+
+@keyframes PageButton{
+    from{
+        transform:scale(1);
+    }
+    to{
+        transform:scale(1.1);
+    }
+}
+
+.test {
+    background-color: turquoise;
+    position: fixed;
+    top: 10px;
+    left: 10px;
 }

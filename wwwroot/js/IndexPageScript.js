@@ -11,6 +11,27 @@ const responsiveDevelopment = document.getElementById("responsive-development");
 const responsiveVideo = document.getElementById("responsive-video");
 const AIdevelopment = document.getElementById("AI-development");
 const topLayer = document.getElementById("top-layer");
+const buttonWrap = document.getElementById("buttons-wrap");
+
+const stickPapers = [document.getElementById("stick-paper-0"),
+document.getElementById("stick-paper-1"),
+document.getElementById("stick-paper-2"),
+document.getElementById("stick-paper-3"),
+document.getElementById("stick-paper-4"),
+];
+
+const pageButtons = document.getElementsByClassName("dash-button-wrap");
+for (let i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener("click", function (e) { return PageButtonClicks(e); });
+}
+/**
+ * 
+ * @param {HTMLDivElement} event
+ */
+function PageButtonClicks(event) {
+    //alert(event.target.getAttribute("data-page-num"));
+    ShowEachStickPage(Number(event.target.getAttribute("data-page-num")));
+}
 
 
 const foreignObject = document.getElementById("foreign-object");
@@ -18,6 +39,7 @@ const foreignObject = document.getElementById("foreign-object");
 const test = document.getElementById("test");
 
 const isMobile = isDeviceAMobile();
+const stickPapersHeight = 1000;
 let IsTopPassed = false;
 let IsBottomPassed = false;
 let topPadding = window.innerWidth * 0.025;
@@ -27,7 +49,13 @@ let leftValue2 = 0;
 let topValue = 0;
 let longHeight = 0;
 
+let currentPage = 0;
+
 let tempNum = 0;
+let firstBool = true;
+let secBool = true;
+let thirdBool = true;
+let fourthBool = true;
 let isBackward = false;
 
 const OnWidthChange = 750;
@@ -61,10 +89,10 @@ function SmallScreen() {
         }
         SetLeftValue(false);
     }
-    test.innerHTML = longHeight + "/ " + window.scrollY;
 }
 
 function MyOnResize() {
+    test.innerHTML = window.innerWidth;
     if (window.innerWidth < OnWidthChange) {
         titleContainer.style.height = 0.4 * OnWidthChange + "px";
         title.style.fontSize = 0.05 * OnWidthChange + "px";
@@ -72,7 +100,7 @@ function MyOnResize() {
         ClassHeightChanger(insideTitle, 0.06 * OnWidthChange + "px");
 
         topLayer.style.width = OnWidthChange * 0.5 + "px";
-        topLayer.style.left = OnWidthChange * 0.25 - 20 + "px";
+        topLayer.style.left = (window.innerWidth - OnWidthChange * 0.5) / 2 + "px";
     }
     else {
         titleContainer.style.height = 0.4 * window.innerWidth + "px";
@@ -95,7 +123,7 @@ function MyOnResize() {
     topLayer.style.top = "10vh";
     topLayer.style.height = "80vh";
 
-
+    
     svgFrame.setAttribute("width", window.innerWidth * 0.8);
     svgFrame.setAttribute("height", frameHeight);
 
@@ -129,8 +157,14 @@ function MyOnResize() {
     AIdevelopment.style.left = leftValue2 + "px";
     AIdevelopment.style.top = topValue - responsiveVideo.getBoundingClientRect().height + "px";
 
-    longHeight = topPadding + 1040 + leftValue2 + frameHeight - (svgFrame.getBoundingClientRect().width - AIdevelopment.getBoundingClientRect().width) / 2;
+
+    longHeight = topPadding + 1040 + leftValue2 + stickPapersHeight + frameHeight - (svgFrame.getBoundingClientRect().width - AIdevelopment.getBoundingClientRect().width) / 2;
     smallScreenContainer.style.height = longHeight + "px";
+
+    for (let i = 0; i < stickPapers.length; i++) {
+        CenterIn(stickPapers[i], topLayer);
+    }
+
     SmallScreen();
 }
 
@@ -148,16 +182,26 @@ function ClassHeightChanger(Collection, value) {
 /**
  * 
  * @param {HTMLElement} elem
+ * @param {HTMLElement} inElem
+ */
+function CenterIn(elem, inElem) {
+    elem.style.left = (inElem.getBoundingClientRect().width - elem.getBoundingClientRect().width) / 2 + "px";
+    elem.style.top = (inElem.getBoundingClientRect().height - elem.getBoundingClientRect().height) / 2 + "px";
+}
+
+/**
+ * 
+ * @param {HTMLElement} elem
  * @param {boolean} switchToFix
  */
-function FixedPositionElement(elem, switchToFix) {
+function FixedPositionElement(elem, switchToFix, topStr="0px") {
     if (switchToFix) {
         elem.style.position = "fixed";
         elem.style.top = topPadding + "px";
     }
     else {
         elem.style.position = "relative";
-        elem.style.top = "0px";
+        elem.style.top = topStr;
     }
 }
 
@@ -168,10 +212,20 @@ function FixedPositionElement(elem, switchToFix) {
 function SetLeftValue(isPassed) {
     const midCenter = AIdevelopment.getBoundingClientRect().left + AIdevelopment.getBoundingClientRect().width / 2;
     if (midCenter < window.innerWidth / 2 && !isBackward) {
-        if (window.scrollY - tempNum < 0) { isBackward = true; }
-        const scrollValue = (window.scrollY - tempNum) / 10;
-        MakeBlur(scrollValue);
-
+        const scrollValue = window.scrollY - tempNum;
+        test.innerHTML = scrollValue + "<br>" + tempNum + "<br>" + topLayer.style.top + "<br>" + window.innerWidth;
+        if (scrollValue < 0) { isBackward = true; }
+        if (scrollValue < 1000) {
+            MakeBlur(scrollValue);
+        }
+        else if (scrollValue < 1000 + stickPapersHeight) {
+            FixedPositionElement(topLayer, true);
+            UnBlurTopLayer();
+            ShowStickPapers(scrollValue);
+        }
+        else {
+            FixedPositionElement(topLayer, false, (longHeight - topLayer.getBoundingClientRect().height + (topLayer.getBoundingClientRect().bottom - smallScreenContainer.getBoundingClientRect().bottom)) + "px");
+        }
     }
     else {
         const tempVal = smallScreenContainer.getBoundingClientRect().top - topPadding;
@@ -186,7 +240,7 @@ function SetLeftValue(isPassed) {
 }
 
 function MakeBlur(BlurVal) {
-    const blurValue = BlurVal < 0 ? 0 : (BlurVal > 100 ? 100 : BlurVal);
+    const blurValue = BlurVal < 0 ? 0 : (BlurVal > 1000 ? 100 : BlurVal / 10);
     blackFrame.style.filter = "blur(" + blurValue + "px)";
     topLayer.style.filter = "blur(" + (100 - blurValue) + "px)";
 
@@ -195,11 +249,52 @@ function MakeBlur(BlurVal) {
     const verseOpacityValue = 1 - opacityValue;
     topLayer.style.opacity = verseOpacityValue.toString();
 
-    topLayer.innerHTML = blurValue;
+    //topLayer.innerHTML = blurValue;
 }
 
-function ShowStickPapers() {
+function UnBlurTopLayer() {
+    blackFrame.style.opacity = "0";
+    topLayer.style.opacity = "1";
+    topLayer.style.filter = "blur(0px)";
+}
 
+function ShowStickPapers(scrollValue) {
+
+    const eachStick = stickPapersHeight / stickPapers.length;
+    for (let i = 0; i < stickPapers.length; i++) {
+        if (scrollValue < stickPapersHeight + eachStick * (i + 1)) {
+            ShowEachStickPage(i);
+            break;
+        }
+    }
+}
+
+/**
+ * 
+ * @param {number} pageNumber
+ */
+function ShowEachStickPage(pageNumber) {
+    if (currentPage != pageNumber) {
+        for (let i = 0; i < stickPapers.length; i++) { RemoveFadeEffect(stickPapers[i]); }
+        for (let i = 0; i < stickPapers.length; i++) {
+            if (i > currentPage && i <= pageNumber) { AddFadeInOutEffect(stickPapers[i]); }
+            else if (i <= currentPage && i > pageNumber) {
+                RemoveAnimationEffect(stickPapers[i], i);
+                AddFadeInOutEffect(stickPapers[i], false);
+            }
+        }
+        if (pageNumber < currentPage) {
+            for (let i = 0; i <= pageNumber; i++) {
+                AddAnimationClass(stickPapers[i], i, (pageNumber - i + 1) * (-5), (pageNumber - i) * (-5));
+            }
+        }
+        else {
+            for (let i = 0; i < pageNumber; i++) {
+                AddAnimationClass(stickPapers[i], i, (pageNumber - i - 1) * (-5), (pageNumber - i) * (-5));
+            }
+        }
+        currentPage = pageNumber;
+    }
 }
 
 function isDeviceAMobile() {
@@ -209,5 +304,83 @@ function isDeviceAMobile() {
             check = true;
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
+}
+
+/**
+ * 
+ * @param {HTMLElement} elem
+ * @param {number} classIndex
+ * @param {number} startAngle
+ * @param {number} endAngle
+ */
+function AddAnimationClass(elem, classIndex, startAngle, endAngle) {
+    let classStr = "rotate-" + classIndex;
+    AddOrRemoveClass2(elem, classStr + "-alt", false);
+    if (AddOrRemoveClass2(elem, classStr, false)) {
+        classStr += "-alt";
+    }
+    document.documentElement.style.setProperty("--anim-start-deg-" + classIndex, startAngle + "deg");
+    document.documentElement.style.setProperty("--anim-end-deg-" + classIndex, endAngle + "deg");
+    AddOrRemoveClass2(elem, classStr);
+    elem.style.rotate = endAngle + "deg";
+}
+
+/**
+ * 
+ * @param {HTMLElement} elem
+ * @param {boolean} IsFadeIn
+ */
+function AddFadeInOutEffect(elem, IsFadeIn = true) {
+    if (IsFadeIn) {
+        AddOrRemoveClass2(elem, "opacity-to-ziro", false);
+        AddOrRemoveClass2(elem, "opacity-to-one");
+        elem.style.opacity = "1";
+    }
+    else {
+        AddOrRemoveClass2(elem, "opacity-to-one", false);
+        AddOrRemoveClass2(elem, "opacity-to-ziro");
+        elem.style.opacity = "0";
+    }
+}
+
+function RemoveFadeEffect(elem) {
+    AddOrRemoveClass2(elem, "opacity-to-ziro", false);
+    AddOrRemoveClass2(elem, "opacity-to-one", false);
+}
+
+/**
+ * 
+ * @param {HTMLElement} elem
+ * @param {number} classIndex
+ */
+function RemoveAnimationEffect(elem, classIndex) {
+    const classStr = "rotate-" + classIndex;
+    AddOrRemoveClass2(elem, classStr, false);
+    AddOrRemoveClass2(elem, classStr + "-alt", false);
+    elem.style.rotate = "0deg";
+}
+
+/**
+ * 
+ * @param {HTMLElement} elem
+ * @param {string} classString
+ * @param {boolean} IsAdd
+ * @returns
+ */
+function AddOrRemoveClass2(elem, classString, IsAdd = true) {
+    let result = false;
+    if (IsAdd) {
+        if (!elem.classList.contains(classString)) {
+            elem.classList.add(classString);
+            result = true;
+        }
+    }
+    else {
+        if (elem.classList.contains(classString)) {
+            elem.classList.remove(classString);
+            result = true;
+        }
+    }
+    return result;
 }
 //alert("dd");
