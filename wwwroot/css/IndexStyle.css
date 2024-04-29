@@ -80,6 +80,41 @@
     opacity: 0.5;
 }
 
+.blur-and-fade{
+    animation-name:BlurAndFade;
+    animation-duration:1s;
+    animation-fill-mode:forwards;
+}
+
+.unblur-and-unfade {
+    animation-name: UnBlurAndUnFade;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes BlurAndFade{
+    from{
+        filter:blur(0px);
+        opacity:1;
+    }
+    to{
+        filter:blur(100px);
+        opacity:0;
+    }
+}
+
+@keyframes UnBlurAndUnFade {
+    from {
+        filter: blur(100px);
+        opacity: 0;
+    }
+
+    to {
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
 .top-layer {
     z-index: 1;
     /*background-color: aqua;*/
@@ -328,7 +363,6 @@
     margin: 0px auto;
     position: relative;
     top: -100px;
-    /*box-shadow: 0px 0px 10px rgb(200,200,200);*/
     border-radius:10px;
     display:grid;
     grid-template-columns: auto auto auto auto auto;

@@ -39,7 +39,7 @@ const foreignObject = document.getElementById("foreign-object");
 const test = document.getElementById("test");
 
 const isMobile = isDeviceAMobile();
-const stickPapersHeight = 1000;
+const stickPapersHeight = 500;
 let IsTopPassed = false;
 let IsBottomPassed = false;
 let topPadding = window.innerWidth * 0.025;
@@ -57,6 +57,7 @@ let secBool = true;
 let thirdBool = true;
 let fourthBool = true;
 let isBackward = false;
+let tempbool = true;
 
 const OnWidthChange = 750;
 let slidingValue = window.innerWidth / 2;
@@ -92,7 +93,7 @@ function SmallScreen() {
 }
 
 function MyOnResize() {
-    test.innerHTML = window.innerWidth;
+    //test.innerHTML = window.innerWidth;
     if (window.innerWidth < OnWidthChange) {
         titleContainer.style.height = 0.4 * OnWidthChange + "px";
         title.style.fontSize = 0.05 * OnWidthChange + "px";
@@ -123,7 +124,7 @@ function MyOnResize() {
     topLayer.style.top = "10vh";
     topLayer.style.height = "80vh";
 
-    
+
     svgFrame.setAttribute("width", window.innerWidth * 0.8);
     svgFrame.setAttribute("height", frameHeight);
 
@@ -158,7 +159,7 @@ function MyOnResize() {
     AIdevelopment.style.top = topValue - responsiveVideo.getBoundingClientRect().height + "px";
 
 
-    longHeight = topPadding + 1040 + leftValue2 + stickPapersHeight + frameHeight - (svgFrame.getBoundingClientRect().width - AIdevelopment.getBoundingClientRect().width) / 2;
+    longHeight = topPadding + 90 + leftValue2 + stickPapersHeight + frameHeight - (svgFrame.getBoundingClientRect().width - AIdevelopment.getBoundingClientRect().width) / 2;
     smallScreenContainer.style.height = longHeight + "px";
 
     for (let i = 0; i < stickPapers.length; i++) {
@@ -194,7 +195,7 @@ function CenterIn(elem, inElem) {
  * @param {HTMLElement} elem
  * @param {boolean} switchToFix
  */
-function FixedPositionElement(elem, switchToFix, topStr="0px") {
+function FixedPositionElement(elem, switchToFix, topStr = "0px") {
     if (switchToFix) {
         elem.style.position = "fixed";
         elem.style.top = topPadding + "px";
@@ -213,15 +214,23 @@ function SetLeftValue(isPassed) {
     const midCenter = AIdevelopment.getBoundingClientRect().left + AIdevelopment.getBoundingClientRect().width / 2;
     if (midCenter < window.innerWidth / 2 && !isBackward) {
         const scrollValue = window.scrollY - tempNum;
-        test.innerHTML = scrollValue + "<br>" + tempNum + "<br>" + topLayer.style.top + "<br>" + window.innerWidth;
+        //test.innerHTML = scrollValue + "<br>" + tempNum + "<br>" + topLayer.style.top + "<br>" + window.innerWidth;
         if (scrollValue < 0) { isBackward = true; }
-        if (scrollValue < 1000) {
-            MakeBlur(scrollValue);
+        if (scrollValue < 50) {
+            //MakeBlur(scrollValue);
+            if (tempbool) {
+                AddOrRemoveClass2(blackFrame, "unblur-and-unfade", false);
+                AddOrRemoveClass2(topLayer, "blur-and-fade", false);
+                AddOrRemoveClass2(blackFrame, "blur-and-fade");
+                AddOrRemoveClass2(topLayer, "unblur-and-unfade");
+                tempbool = false;
+            }
         }
-        else if (scrollValue < 1000 + stickPapersHeight) {
+        else if (scrollValue < 50 + stickPapersHeight) {
             FixedPositionElement(topLayer, true);
             UnBlurTopLayer();
             ShowStickPapers(scrollValue);
+            tempbool = true;
         }
         else {
             FixedPositionElement(topLayer, false, (longHeight - topLayer.getBoundingClientRect().height + (topLayer.getBoundingClientRect().bottom - smallScreenContainer.getBoundingClientRect().bottom)) + "px");
@@ -236,6 +245,13 @@ function SetLeftValue(isPassed) {
         blackFrame.style.opacity = 1;
         topLayer.style.opacity = "0";
         isBackward = false;
+        if (!tempbool) {
+            AddOrRemoveClass2(blackFrame, "blur-and-fade", false);
+            AddOrRemoveClass2(topLayer, "unblur-and-unfade", false);
+            AddOrRemoveClass2(blackFrame, "unblur-and-unfade");
+            AddOrRemoveClass2(topLayer, "blur-and-fade");
+            tempbool = true;
+        }
     }
 }
 
@@ -262,7 +278,7 @@ function ShowStickPapers(scrollValue) {
 
     const eachStick = stickPapersHeight / stickPapers.length;
     for (let i = 0; i < stickPapers.length; i++) {
-        if (scrollValue < stickPapersHeight + eachStick * (i + 1)) {
+        if (scrollValue < eachStick * (i + 1)) {
             ShowEachStickPage(i);
             break;
         }
