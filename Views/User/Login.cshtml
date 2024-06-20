@@ -1,0 +1,119 @@
+﻿<style>
+    html, body {
+        margin: 0;
+    }
+
+    #c {
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        z-index: -1;
+        top: 0px;
+        left: 0px;
+    }
+
+    #whole-page {
+        width: 100vw;
+        height: 100vh;
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    #login-view {
+        margin: 15vh 30vw 15vh 30vw;
+        background: linear-gradient(to top right,rgba(0,200,255,0.8) 0%, rgba(0,50,255,0.8) 50%, rgba(255,100,255,0.8) 100%);
+        height: 60vh;
+        border-radius: 20px;
+        border-width: 2px;
+        border-color: ghostwhite;
+        border-style: solid;
+        padding: 20px;
+        min-height: 300px;
+        min-width: 300px;
+    }
+
+    #login-form {
+        display: grid;
+        grid-template-columns: auto;
+        margin: 0vw 10vw;
+        padding: 5vh 0vw
+    }
+
+    .login-label {
+        color: white;
+        font-size: 15px;
+        margin: 10px 10px 2px 10px;
+    }
+
+    .login-input {
+        border-radius: 10px;
+        border-style: none;
+        margin: 2px 10px 10px 10px;
+        height: 40px;
+        min-height: 30px;
+        min-width: 50px;
+        max-width: 350px;
+        font-size: 20px;
+        padding: 1px 10px 1px 10px;
+    }
+
+    .password-div {
+        max-width: 350px;
+        min-width: 50px;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .login-veiw-a {
+        color: white;
+        margin: 10px;
+        text-decoration: none;
+    }
+
+    .forget-pass {
+        text-align: right;
+        font-size: 15px;
+    }
+
+    .sign-up {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .login-view-button {
+        border-radius: 10px;
+        height: 40px;
+        min-height: 30px;
+        margin: 10px;
+        background: linear-gradient(to right,rgb(0,200,255) 0%, rgb(255,100,255) 100%);
+    }
+
+</style>
+
+<canvas id="c" style="background-color:black;"></canvas>
+<p id="t" style="color:white"></p>
+
+<div id="whole-page">
+    <div id="login-view">
+        <form id="login-form" asp-controller="User" asp-action="IndexPost" name="theForm" method="post" onsubmit="event.preventDefault()">
+            <label class="login-label" for="username">Username</label>
+            <input class="login-input" type="text" id="username" name="username" required placeholder="Email" title="Please enter your email address">
+            <label class="login-label" for="pass">Password</label>
+
+            <input class="login-input" type="password" id="pass" name="password" required placeholder="Password" title="To view your password, click and hold">
+
+            <a class="login-veiw-a forget-pass" href="forgetpassword">Forget password?</a>
+            <input id="login-button" class="login-view-button" type="submit" value="Login">
+            <a class="login-veiw-a sign-up" href="register">Or Sign Up</a>
+        </form>
+    </div>
+</div>
+<script type="module" src="/js/LoginPage.js"></script>
+
+
+

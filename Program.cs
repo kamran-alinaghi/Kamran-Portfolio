@@ -8,6 +8,15 @@ builder.Services.AddDbContext<Kamran_PortfolioContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+#region Sessioin and coockies settings
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +29,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 

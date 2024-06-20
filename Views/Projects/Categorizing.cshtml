@@ -1,6 +1,46 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Kamran_Portfolio.Models.UserInfo
 @{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
-<h1>Cat</h1>
+<head>
+    <link rel="stylesheet" href="~/css/CategorizingStyle.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kamran-alinaghi.ca/js/list.js"></script>
+</head>
+
+<table id="table" class="flex-table">
+    <h1>Welcome @Html.DisplayFor(model => model.Name)</h1>
+    <tr>
+        <th>Name</th>
+        <th id="addclick" class="add-column">+</th>
+    </tr>
+    <tr>
+        <td id="td">
+            <input />
+        </td>
+    </tr>
+</table>
+
+
+<div id="overal" style="visibility:hidden;z-index:1">
+    <div id="overal-black" class="overal-black"></div>
+    <div class="data-input">
+        <div class="input-frame">
+            <label for="name-input">Property Name</label>
+            <input id="name-input" type="text" />
+            <label id="value-label" for="value-input">Property type</label>
+            <select id="value-input">
+                <option value="n">quantitative</option>
+                <option value="q">qualitative</option>
+            </select>
+            <button id="save-button" class="save-button">Save</button>
+            <button id="delete-button" class="save-button">Delete</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script type="module" src="~/js/CategorozingScript.js"></script>

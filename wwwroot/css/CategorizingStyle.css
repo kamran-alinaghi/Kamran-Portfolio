@@ -1,0 +1,76 @@
+﻿body {
+    font-family: Arial;
+    /*overflow-x: hidden;*/
+}
+
+.flex-table {
+    border-collapse: collapse;
+    margin:10vh 5vw;
+    overflow-x:auto;
+}
+
+td, th {
+    border: 1px solid skyblue;
+    text-align: left;
+    padding: 8px;
+    min-width: 40px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: skyblue;
+}
+
+.add-cell {
+    border: 1px skyblue;
+    border-style: dashed;
+}
+
+.overal-black{
+    background-color:rgba(100,100,100,0.5);
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100vw;
+    height:100vh;
+}
+
+.data-input{
+    background-color:white;
+    border-radius:20px;
+    width:50vw;
+    height:50vh;
+    min-width:300px;
+    min-height:200px;
+    position:fixed;
+    top:0px;
+    left:0px;
+    margin:25vh 25vw;
+}
+.input-frame{
+    display:grid;
+    grid-template-columns:150px auto;
+    row-gap:15px;
+    margin:10% 10%;
+    font-size:20px;
+}
+
+.save-button{
+    grid-column-start:2;
+    width:150px;
+}
+
+.del-button {
+    width: 30px;
+    height: 30px;
+    background-image: url(../lib/images/DelButton.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color:inherit;
+    border-style:none;
+}
+
+.clickable-cell {
+}
+
+.editable-cell{}
