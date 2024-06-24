@@ -1,6 +1,7 @@
 ﻿using Kamran_Portfolio.Data;
 using Kamran_Portfolio.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Kamran_Portfolio.Controllers
 {
@@ -16,18 +17,18 @@ namespace Kamran_Portfolio.Controllers
 
         public IActionResult Index()
         {
-            UserInfo? user = GetUserFromDB(GetUserIdFromSession());
+            UserInfo? user = GetUserInSession();
             if (user != null && user.Id > 0) { return RedirectToAction("Dashboard", "User"); }
             else { return RedirectToAction("Login", "User"); }
         }
 
         public IActionResult IndexRedirect()
         {
-            UserInfo? user = GetUserFromDB(GetUserIdFromSession());
+            UserInfo? user = GetUserInSession();
             if (user != null && user.Id > 0)
             {
                 RedirectOptions redirectOptions = GetRedirectSession();
-                AddUserIdIntoSession(user.Id);
+                SetUserInSession(user);
                 return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
             }
             else
@@ -37,31 +38,32 @@ namespace Kamran_Portfolio.Controllers
         }
 
         [HttpPost]
-        public IActionResult IndexPost(string username, string password)
+        public IActionResult Index(string username, string password)
         {
             UserInfo user = GetUserFromDB(username, password);
             if (user != null && user.Id > 0)
             {
                 RedirectOptions redirectOptions = GetRedirectSession();
-                _contex.HttpContext.Session.SetString("Id", user.Id.ToString());
+                SetUserInSession(user);
                 return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
             }
-            else { 
-                return RedirectToAction("Login", "User"); 
+            else
+            {
+                return RedirectToAction("Login", "User");
             }
         }
 
         public IActionResult Dashboard()
         {
-            UserInfo? user = GetUserFromDB(GetUserIdFromSession());
+            UserInfo? user = GetUserInSession();
             if (user != null && user.Id > 0)
             {
-                AddUserIdIntoSession(user.Id);
+                SetUserInSession(user);
                 return View(user);
             }
             else
             {
-                SetRedirectSession("Dashboard", "User");
+                SetRedirectSession(new RedirectOptions("Dashboard", "User"));
                 return RedirectToAction("IndexRedirect", "User");
             }
         }
@@ -69,58 +71,93 @@ namespace Kamran_Portfolio.Controllers
         public IActionResult Login()
         {
             RedirectOptions redirectOptions = GetRedirectSession();
-            UserInfo? user = GetUserFromDB(GetUserIdFromSession());
-            if (user != null && user.Id > 0) {
-                AddUserIdIntoSession(user.Id);
-                return RedirectToAction(redirectOptions.View, redirectOptions.Controller); 
+            UserInfo? user = GetUserInSession();
+            if (user != null && user.Id > 0)
+            {
+                SetUserInSession(user);
+                return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
             }
             else { return View(); }
         }
 
-
-
-
-
-
-
-        private void SetRedirectSession(string view, string controller)
+        public IActionResult Register()
         {
-            _contex.HttpContext.Session.SetString("view", view);
-            _contex.HttpContext.Session.SetString("controller", controller);
+            return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(string name, string username, string password, string DOB)
+        {
+            int InjectID = GetLastID();
+            bool canAdd = DoesMatch(username);
+            if (canAdd)
+            {
+                UserInfo user = new UserInfo();
+                user.Id = InjectID + 1;
+                user.Name = name;
+                user.Password = password;
+                user.Email = username;
+                user.BirthDate = DateTime.Parse(DOB);
+                ctext.Add(user);
+                await ctext.SaveChangesAsync();
+                SetUserInSession(user);
+            }
+            RedirectOptions redirectOptions = GetRedirectSession();
+            return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
+        }
+
+
+
+
+
+        private void SetRedirectSession(RedirectOptions redirectOptions)
+        {
+            _contex.HttpContext.Session.SetString("redirectOptions", JsonConvert.SerializeObject(redirectOptions));
+        }
+
+
 
         private RedirectOptions GetRedirectSession()
         {
-            string? v =_contex.HttpContext.Session.GetString("view");
-            string? c =_contex.HttpContext.Session.GetString("controller");
-            if(v == null || v.Length < 1) { v = "Dashboard"; }
-            if (c == null || c.Length < 1) { c = "User"; }
-            return new RedirectOptions(v, c);
+            string? redirectStr = _contex.HttpContext.Session.GetString("redirectOptions");
+            if (redirectStr != null && redirectStr.Length > 0) { return JsonConvert.DeserializeObject<RedirectOptions>(redirectStr); }
+            else { return new RedirectOptions("Dashboard", "User"); }
         }
 
-        private void AddUserIdIntoSession(int Id)
+        private void SetUserInSession(UserInfo user)
         {
-            _contex.HttpContext.Session.SetString("Id", Id.ToString());
+            if (user != null && user.Id > 0)
+            {
+                string jsonUser = JsonConvert.SerializeObject(user);
+                _contex.HttpContext.Session.SetString("user", jsonUser);
+            }
         }
 
-        private UserInfo? GetUserFromDB(int id)
+        private UserInfo? GetUserInSession()
+        {
+            string? jsonUser = _contex.HttpContext.Session.GetString("user");
+            if (jsonUser != null && jsonUser.Length > 0)
+            {
+                return JsonConvert.DeserializeObject<UserInfo>(jsonUser);
+            }
+            else { return null; }
+        }
+
+        private bool DoesMatch(string userName)
         {
             List<UserInfo> users = new List<UserInfo>();
             var res = from l in ctext.UserInfo
-                      where l.Id == id
+                      where l.Email == userName
                       select l;
+            return !res.Any();
+        }
 
-            foreach (var item in res)
-            {
-                users.Add(item);
-            }
-
-            if (users.Count > 0 && users.Count < 2)
-            {
-                //_contex.HttpContext.Session.SetString("Id", users[0].Id.ToString());
-                return users[0];
-            }
-            else { return null; }
+        private int GetLastID()
+        {
+            List<UserInfo> users = new List<UserInfo>();
+            var res = from l in ctext.UserInfo
+                      select l.Id;
+            return res.Max();
         }
 
         private UserInfo? GetUserFromDB(string _username, string _password)
@@ -141,15 +178,6 @@ namespace Kamran_Portfolio.Controllers
                 return users[0];
             }
             else { return null; }
-        }
-
-        private int GetUserIdFromSession()
-        {
-            int tempId;
-            string _idStr = _contex.HttpContext.Session.GetString("Id");
-            try { tempId = Int32.Parse(_idStr); }
-            catch { tempId = -1; }
-            return tempId;
         }
     }
 }

@@ -15,5 +15,7 @@
         public string? Country { get; set; }
         public string? PostalCode { get; set; }
 
+        public UserInfo() { }
+
     }
 }

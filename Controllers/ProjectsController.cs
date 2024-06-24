@@ -1,6 +1,7 @@
 ﻿using Kamran_Portfolio.Models;
 using Kamran_Portfolio.Data;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Kamran_Portfolio.Controllers
 {
@@ -20,10 +21,10 @@ namespace Kamran_Portfolio.Controllers
 
         public IActionResult Categorizing()
         {
-            UserInfo? user = GetUserFromDB(GetUserIdFromSession());
+            UserInfo? user = GetUserInSession();
             if (user == null || user.Id < 1)
             {
-                SetRedirectSession("Categorizing", "Projects");
+                SetRedirectSession(new RedirectOptions("Categorizing", "Projects"));
                 return RedirectToAction("IndexRedirect", "User");
             }
             return View(user);
@@ -32,38 +33,36 @@ namespace Kamran_Portfolio.Controllers
 
 
 
-        private void SetRedirectSession(string view,string controller)
-        {
-            _contex.HttpContext.Session.SetString("view", view);
-            _contex.HttpContext.Session.SetString("controller", controller);
-        }
-        private UserInfo? GetUserFromDB(int id)
-        {
-            List<UserInfo> users = new List<UserInfo>();
-            var res = from l in ctext.UserInfo
-                      where l.Id == id
-                      select l;
 
-            foreach (var item in res)
+        private void SetUserInSession(UserInfo user)
+        {
+            if (user != null && user.Id > 0)
             {
-                users.Add(item);
+                string jsonUser = JsonConvert.SerializeObject(user);
+                _contex.HttpContext.Session.SetString("user", jsonUser);
             }
+        }
 
-            if (users.Count > 0 && users.Count < 2)
+        private UserInfo? GetUserInSession()
+        {
+            string? jsonUser = _contex.HttpContext.Session.GetString("user");
+            if (jsonUser != null && jsonUser.Length > 0)
             {
-                //_contex.HttpContext.Session.SetString("Id", users[0].Id.ToString());
-                return users[0];
+                return JsonConvert.DeserializeObject<UserInfo>(jsonUser);
             }
             else { return null; }
         }
 
-        private int GetUserIdFromSession()
+        private void SetRedirectSession(RedirectOptions redirectOptions)
         {
-            int tempId;
-            string _idStr = _contex.HttpContext.Session.GetString("Id");
-            try { tempId = Int32.Parse(_idStr); }
-            catch { tempId = -1; }
-            return tempId;
+            _contex.HttpContext.Session.SetString("redirectOptions", JsonConvert.SerializeObject(redirectOptions));
+        }
+
+        private RedirectOptions GetRedirectSession()
+        {
+            string? redirectStr = _contex.HttpContext.Session.GetString("redirectOptions");
+            if (redirectStr != null && redirectStr.Length > 0) { return JsonConvert.DeserializeObject<RedirectOptions>(redirectStr); }
+            else { return new RedirectOptions("Dashboard", "User"); }
         }
     }
 }
