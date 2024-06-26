@@ -17,5 +17,13 @@
 
         public UserInfo() { }
 
+        public UserInfo(int id, string name)
+        {
+            Id = id;
+            Name = name;
+            Email = "email@email.com";
+            Password = "password";
+            BirthDate = new DateTime();
+        }
     }
 }

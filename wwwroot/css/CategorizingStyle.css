@@ -70,6 +70,15 @@ tr:nth-child(even) {
     border-style:none;
 }
 
+.select-options{
+    min-width:100px;
+}
+
+.project-name-textBox{
+    visibility:hidden;
+    margin:10px;
+}
+
 .clickable-cell {
 }
 

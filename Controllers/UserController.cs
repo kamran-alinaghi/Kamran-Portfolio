@@ -1,4 +1,5 @@
-﻿using Kamran_Portfolio.Data;
+﻿using Kamran_Portfolio.Data.DataContexts;
+using Kamran_Portfolio.Data.OtherData;
 using Kamran_Portfolio.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -45,6 +46,7 @@ namespace Kamran_Portfolio.Controllers
             {
                 RedirectOptions redirectOptions = GetRedirectSession();
                 SetUserInSession(user);
+                RetriveAndSaveAllData(user);
                 return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
             }
             else
@@ -110,12 +112,20 @@ namespace Kamran_Portfolio.Controllers
 
 
 
+
+
+
+
+
+        private void RetriveAndSaveAllData(UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         private void SetRedirectSession(RedirectOptions redirectOptions)
         {
             _contex.HttpContext.Session.SetString("redirectOptions", JsonConvert.SerializeObject(redirectOptions));
         }
-
-
 
         private RedirectOptions GetRedirectSession()
         {

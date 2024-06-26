@@ -8,8 +8,19 @@
     <script src="http://kamran-alinaghi.ca/js/list.js"></script>
 </head>
 
+<h1>Welcome @Html.DisplayFor(model => model.Name)</h1>
+<div id="project-selector" class="project-selector">
+    <label id="select-optins-label" class="select-optins-label" for="select-options">Choose a project</label>
+    <select id="select-options" name="select-options" class="select-options">
+
+    </select>
+</div>
+<div id="project-name-textBox" class="project-name-textBox">
+    <label for="tBox">New Project Name: </label>
+    <input id="tBox" name="tBox" type="text" />
+</div>
+
 <table id="table" class="flex-table">
-    <h1>Welcome @Html.DisplayFor(model => model.Name)</h1>
     <tr>
         <th>Name</th>
         <th id="addclick" class="add-column">+</th>
@@ -20,6 +31,9 @@
         </td>
     </tr>
 </table>
+<div id="save-container" class="save-container">
+    <button id="save-project-button" class="save-project-button">Save Project</button>
+</div>
 
 
 <div id="overal" style="visibility:hidden;z-index:1">
@@ -42,5 +56,5 @@
 
 
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="module" src="~/js/CategorozingScript.js"></script>

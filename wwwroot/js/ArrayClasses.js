@@ -1,4 +1,5 @@
 ﻿export class ColumnContent {
+    Id = 0;
     Title;
     nOrQ;
     /**
@@ -6,9 +7,10 @@
      * @param {string} titleStr
      * @param {boolean} nOrQBool
      */
-    constructor(titleStr, nOrQBool) {
+    constructor(titleStr, nOrQBool, id = 0) {
         this.Title = titleStr;
         this.nOrQ = nOrQBool;
+        this.Id = id;
     }
 }
 
@@ -27,6 +29,7 @@ export class RowProperties {
 }
 
 export class RowContent {
+    Id = 0;
     Name;
     Properties;
     /**
@@ -35,7 +38,8 @@ export class RowContent {
      * @param {boolean} checked
      * @param {number} num
      */
-    constructor(nameString, checked, num) {
+    constructor(nameString, checked, num, id = 0) {
+        this.Id = id;
         this.Name = nameString;
         this.Properties = [new RowProperties(checked, num)];
     }
@@ -55,10 +59,22 @@ export class RowContent {
 }
 
 
+
+
 export class TabelContent {
     KeyString;
     ColumnList;
     RowList;
+    IsDataChanged = {
+        Columns: false,
+        Rows: false,
+        Values: false,
+        SetToFalse(){
+            this.Columns = false;
+            this.Rows = false;
+            this.Values = false;
+        }
+    }
     constructor() {
         this.ColumnList = [new ColumnContent("+/", false)];
         this.RowList = [new RowContent("+/", true, 0)];
@@ -71,9 +87,9 @@ export class TabelContent {
      * 
      * @param {string} rowName
      */
-    AddRow(rowName) {
+    AddRow(rowName, id = 0) {
         this.RowList.splice(this.RowList.length - 1, 1);
-        this.RowList.push(new RowContent(rowName, true, 0));
+        this.RowList.push(new RowContent(rowName, true, 0, id));
         this.RowList[this.RowList.length - 1].RemoveProperty(0);
         this.RowList.push(new RowContent("+/", true, 0));
         this.ModifyRows();
@@ -96,19 +112,18 @@ export class TabelContent {
      * @param {string} title
      * @param {boolean} nOrQ
      */
-    AddColumn(title, nOrQ) {
+    AddColumn(title, nOrQ, id = 0) {
         let tempCol = [];
         for (let i = 0; i < this.ColumnList.length; i++) {
             if (i < this.ColumnList.length - 1) {
                 tempCol.push(this.ColumnList[i]);
             }
             else {
-                tempCol.push(new ColumnContent(title, nOrQ));
+                tempCol.push(new ColumnContent(title, nOrQ, id));
             }
         }
-        tempCol.push(new ColumnContent("+/", false));
+        tempCol.push(new ColumnContent("+/", false, id));
         this.ColumnList = tempCol;
-
         this.ModifyRows();
     }
 

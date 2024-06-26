@@ -1,4 +1,4 @@
-﻿namespace Kamran_Portfolio.Data
+﻿namespace Kamran_Portfolio.Data.OtherData
 {
     public class RedirectOptions
     {

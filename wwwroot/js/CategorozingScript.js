@@ -9,13 +9,25 @@ const nameInput = document.getElementById("name-input");
 const valueInput = document.getElementById("value-input");
 const overalBlack = document.getElementById("overal-black");
 const valueLabel = document.getElementById("value-label");
+const saveProjectButton = document.getElementById("save-project-button");
+const selectOptions = document.getElementById("select-options");
+const projectNameTextBox = document.getElementById("project-name-textBox");
+
+var CreatedProjects = [];
+var DBcolumns = [];
+var DBrows = [];
+var DBvalues = [];
 overalBlack.onclick = function (e) { return ShowInputDialog(e); };
 saveButton.onclick = function (e) { return SaveButtonOveral(e); };
 deleteButton.onclick = function (e) { return DeleteData(e.target); };
+saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
+selectOptions.onchange = function (e) { return ChangeProject(e); }
 
 let tableContent = new myArrayData.TabelContent();
-let ttt = 0;
+let IsSaved = true;
 
+
+InitializeProjectsOptions();
 RefreshTable();
 
 function RefreshTable() {
@@ -150,8 +162,123 @@ function UpdateTableData(e) {
             else { e.target.style.backgroundColor = "white"; }
         }
     }
+}
 
-    //alert(rowIndex + "/" + columnIndex);
+function InitializeProjectsOptions() {
+    $.post("/categorizingapi/CreatedProjects",
+        JSON.stringify({ "Id": 2 }),
+        function (data, status) {
+            let str = "";
+            CreatedProjects = JSON.parse(data);
+            for (let i = 0; i < CreatedProjects.length; i++) {
+                str += '<option value="' + CreatedProjects[i].Id + '">' + CreatedProjects[i].ProjectName + '</option>';
+            }
+            str += '<option value="0">New Project</option>';
+            selectOptions.innerHTML = str;
+            $('#select-options').val(CreatedProjects[0].Id);
+            $('#select-options').change();
+        });
+}
+
+function ChangeProject(event) {
+    if (!IsSaved) {
+        alert("Not Saved!");
+    }
+    else {
+        if (event.target.value > 0) {
+            projectNameTextBox.style.visibility = "hidden";
+            GetDataOfProject(event.target.value);
+        }
+        else {
+            projectNameTextBox.style.visibility = "visible";
+            tableContent = new myArrayData.TabelContent();
+            RefreshTable();
+        }
+    }
+}
+
+async function GetDataOfProject(Id) {
+    GetColumnsFromDB(Id);
+    GetRowsFromDB(Id);
+    GetValuesFromDB(Id);
+}
+
+function GetColumnsFromDB(Id) {
+
+    $.post("/categorizingapi/Columns",
+        JSON.stringify({ "Id": Id }),
+        function (data, status) {
+            //alert("2:\n" + data);
+            SetDBdata('c', data);
+        });
+
+}
+
+function SetDBdata(c, data) {
+    switch (c) {
+        case 'c':
+            DBcolumns = JSON.parse(data);
+            tableContent.IsDataChanged.Columns = true;
+            break;
+        case 'r':
+            DBrows = JSON.parse(data);
+            tableContent.IsDataChanged.Rows = true;
+            break;
+        case 'v':
+            DBvalues = JSON.parse(data);
+            tableContent.IsDataChanged.Values = true;
+            break;
+    }
+    if (tableContent.IsDataChanged.Columns && tableContent.IsDataChanged.Rows && tableContent.IsDataChanged.Values) {
+        tableContent.IsDataChanged.SetToFalse();
+        StoreDataToTableContent();
+    }
+}
+
+function GetRowsFromDB(Id) {
+    $.post("/categorizingapi/Rows",
+        JSON.stringify({ "Id": Id }),
+        function (data, status) {
+            SetDBdata('r', data);
+        });
+}
+
+function GetValuesFromDB(Id) {
+    $.post("/categorizingapi/Values",
+        JSON.stringify({ "Id": Id }),
+        function (data, status) {
+            SetDBdata('v', data);
+        });
+}
+
+function StoreDataToTableContent() {
+    tableContent = new myArrayData.TabelContent();
+    let tempstr = "";
+    for (let i = 0; i < DBcolumns.length; i++) {
+        tableContent.AddColumn(DBcolumns[i].ColumnName, DBcolumns[i].IsBoolean, DBcolumns[i].Id);
+    }
+    for (let i = 0; i < DBrows.length; i++) {
+        tableContent.AddRow(DBrows[i].RowName, DBrows[i].Id);
+    }
+    for (let i = 0; i < tableContent.RowList.length - 1; i++) {
+        for (let j = 0; j < tableContent.RowList[i].Properties.length; j++) {
+            tableContent.RowList[i].Properties[j] = FindAndSetValues(i, j);
+        }
+    }
+    RefreshTable();
+}
+
+function FindAndSetValues(rowIndex, columnIndex) {
+    for (let i = 0; i < DBvalues.length; i++) {
+        if (DBvalues[i].RowId == tableContent.RowList[rowIndex].Id && DBvalues[i].ColumnId == tableContent.ColumnList[columnIndex].Id) {
+            return new myArrayData.RowProperties(tableContent.ColumnList[columnIndex].nOrQ, DBvalues[i].Value);
+        }
+    }
+    return new myArrayData.RowProperties(false, 0);
+}
+
+function SaveButtonFunction(event) {
+
 }
 
 function SaveButtonOveral(e) {
