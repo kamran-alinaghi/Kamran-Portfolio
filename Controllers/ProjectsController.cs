@@ -35,6 +35,11 @@ namespace Kamran_Portfolio.Controllers
 
 
 
+
+
+
+
+
         private void SetUserInSession(UserInfo user)
         {
             if (user != null && user.Id > 0)
@@ -48,7 +53,7 @@ namespace Kamran_Portfolio.Controllers
         {
             if(String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development"))
             {
-                return new UserInfo(100,"testUser");
+                return new UserInfo(2,"testUser");
             }
             string? jsonUser = _contex.HttpContext.Session.GetString("user");
             if (jsonUser != null && jsonUser.Length > 0)

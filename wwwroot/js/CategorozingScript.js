@@ -11,7 +11,7 @@ const overalBlack = document.getElementById("overal-black");
 const valueLabel = document.getElementById("value-label");
 const saveProjectButton = document.getElementById("save-project-button");
 const selectOptions = document.getElementById("select-options");
-const projectNameTextBox = document.getElementById("project-name-textBox");
+const projectNameTextBox = document.getElementById("tBox");
 
 var CreatedProjects = [];
 var DBcolumns = [];
@@ -22,6 +22,7 @@ saveButton.onclick = function (e) { return SaveButtonOveral(e); };
 deleteButton.onclick = function (e) { return DeleteData(e.target); };
 saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
 selectOptions.onchange = function (e) { return ChangeProject(e); }
+projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
 
 let tableContent = new myArrayData.TabelContent();
 let IsSaved = true;
@@ -52,7 +53,7 @@ function RefreshTable() {
 }
 
 function GetColumns() {
-    let str = "<tr><th>" + tableContent.KeyString + "</th>";
+    let str = "<tr><th>Member Name</th>";
     for (let i = 0; i < tableContent.ColumnList.length; i++) {
         if (tableContent.ColumnList[i].Title == "+/") {
             str += '<th class="add-cell clickable-cell" data-index="c-+">+</th>';
@@ -164,9 +165,13 @@ function UpdateTableData(e) {
     }
 }
 
-function InitializeProjectsOptions() {
+function ChangeProjectName(event) {
+    tableContent.TableName = event.target.value;
+}
+
+function InitializeProjectsOptions(selectedIndex = 0) {
     $.post("/categorizingapi/CreatedProjects",
-        JSON.stringify({ "Id": 2 }),
+        JSON.stringify({ "Id": userId }),
         function (data, status) {
             let str = "";
             CreatedProjects = JSON.parse(data);
@@ -175,7 +180,7 @@ function InitializeProjectsOptions() {
             }
             str += '<option value="0">New Project</option>';
             selectOptions.innerHTML = str;
-            $('#select-options').val(CreatedProjects[0].Id);
+            $('#select-options').val(CreatedProjects[selectedIndex].Id);
             $('#select-options').change();
         });
 }
@@ -186,12 +191,11 @@ function ChangeProject(event) {
     }
     else {
         if (event.target.value > 0) {
-            projectNameTextBox.style.visibility = "hidden";
             GetDataOfProject(event.target.value);
         }
         else {
-            projectNameTextBox.style.visibility = "visible";
             tableContent = new myArrayData.TabelContent();
+            tableContent.userId = userId;
             RefreshTable();
         }
     }
@@ -208,10 +212,25 @@ function GetColumnsFromDB(Id) {
     $.post("/categorizingapi/Columns",
         JSON.stringify({ "Id": Id }),
         function (data, status) {
-            //alert("2:\n" + data);
             SetDBdata('c', data);
         });
 
+}
+
+function GetRowsFromDB(Id) {
+    $.post("/categorizingapi/Rows",
+        JSON.stringify({ "Id": Id }),
+        function (data, status) {
+            SetDBdata('r', data);
+        });
+}
+
+function GetValuesFromDB(Id) {
+    $.post("/categorizingapi/Values",
+        JSON.stringify({ "Id": Id }),
+        function (data, status) {
+            SetDBdata('v', data);
+        });
 }
 
 function SetDBdata(c, data) {
@@ -235,25 +254,12 @@ function SetDBdata(c, data) {
     }
 }
 
-function GetRowsFromDB(Id) {
-    $.post("/categorizingapi/Rows",
-        JSON.stringify({ "Id": Id }),
-        function (data, status) {
-            SetDBdata('r', data);
-        });
-}
-
-function GetValuesFromDB(Id) {
-    $.post("/categorizingapi/Values",
-        JSON.stringify({ "Id": Id }),
-        function (data, status) {
-            SetDBdata('v', data);
-        });
-}
-
 function StoreDataToTableContent() {
     tableContent = new myArrayData.TabelContent();
-    let tempstr = "";
+    tableContent.TableName = CreatedProjects[selectOptions.value - 1].ProjectName;
+    projectNameTextBox.value = tableContent.TableName;
+    tableContent.TableId = CreatedProjects[selectOptions.value - 1].Id;
+    tableContent.userId = userId;
     for (let i = 0; i < DBcolumns.length; i++) {
         tableContent.AddColumn(DBcolumns[i].ColumnName, DBcolumns[i].IsBoolean, DBcolumns[i].Id);
     }
@@ -278,7 +284,21 @@ function FindAndSetValues(rowIndex, columnIndex) {
 }
 
 function SaveButtonFunction(event) {
+    SendPUTrequest();
+    //retrieve all data again
+    //set to new project index
+}
 
+function SendPUTrequest() {
+    $.ajax({
+        url: "/categorizingapi/PutDataToDb",
+        type: 'PUT',
+        data: JSON.stringify(tableContent),
+        success: function (result) {
+            alert(result);
+            InitializeProjectsOptions(result - 1);
+        }
+    });
 }
 
 function SaveButtonOveral(e) {
@@ -328,7 +348,6 @@ function DeleteData(elem) {
     let rOrC = tempStr.slice(0, 1);
     let index = -1;
     index = parseInt(tempStr.slice(2));
-    //alert(rOrC + "/" + index);
     if (confirm("Are you sure you want to delete this data?")) {
         if (rOrC == "r" && index > -1) { tableContent.RemoveRow(index); }
         else if (rOrC == "c" && index > -1) { tableContent.RemoveColumn(index); }

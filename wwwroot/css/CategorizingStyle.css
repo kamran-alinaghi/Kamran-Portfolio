@@ -75,7 +75,6 @@ tr:nth-child(even) {
 }
 
 .project-name-textBox{
-    visibility:hidden;
     margin:10px;
 }
 

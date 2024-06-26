@@ -1,4 +1,5 @@
 ﻿using Kamran_Portfolio.Data.DataContexts;
+using Kamran_Portfolio.Data.OtherData;
 using Kamran_Portfolio.Data.Post_Parameters;
 using Kamran_Portfolio.Models;
 using Kamran_Portfolio.Models.Categorizing;
@@ -28,8 +29,8 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string PurchasedProducts()
         {
-            IdParams parameters = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
-            if(parameters!=null && parameters.Id>0)
+            IdParams? parameters = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
+            if (parameters != null && parameters.Id > 0)
             {
                 return JsonConvert.SerializeObject(GetProductsOfUser(parameters.Id));
             }
@@ -39,10 +40,10 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string CreatedProjects()
         {
-            IdParams parameters = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
+            IdParams? parameters = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
             if (parameters != null && parameters.Id > 0)
             {
-                return JsonConvert.SerializeObject(GetProjectsOfUser(parameters.Id),Formatting.Indented);
+                return JsonConvert.SerializeObject(GetProjectsOfUser(parameters.Id), Formatting.Indented);
             }
             return "Not Found";
         }
@@ -50,7 +51,7 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string Columns()
         {
-            IdParams param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
+            IdParams? param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
             if (param != null && param.Id > 0)
             {
                 return JsonConvert.SerializeObject(GetColumnsForProject(param.Id));
@@ -61,7 +62,7 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string Rows()
         {
-            IdParams param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
+            IdParams? param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
             if (param != null && param.Id > 0)
             {
                 return JsonConvert.SerializeObject(GetRowsForProject(param.Id));
@@ -72,7 +73,7 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string Values()
         {
-            IdParams param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
+            IdParams? param = JsonConvert.DeserializeObject<IdParams>(GetRequestBody(_contex.HttpContext.Request.Body));
             if (param != null && param.Id > 0)
             {
                 return JsonConvert.SerializeObject(GetValuesForProject(param.Id));
@@ -86,6 +87,19 @@ namespace Kamran_Portfolio.Controllers
             return GetRequestBody(_contex.HttpContext.Request.Body);
         }
 
+        [HttpPut]
+        public string PutDataToDb()
+        {
+            int? t = -1;
+            TableContentDbTheme? param = JsonConvert.DeserializeObject<TableContentDbTheme>(GetRequestBody(_contex.HttpContext.Request.Body));
+            if (param != null && param.TableId > -1)
+            {
+                t=UpdateCreatedProjects(param.userId, param.TableId,param.TableName);
+                //add or select name 
+            }
+            if (t != null) { return JsonConvert.SerializeObject(t); }
+            else { return "none"; }
+        }
 
 
 
@@ -96,6 +110,32 @@ namespace Kamran_Portfolio.Controllers
 
 
 
+
+        private int? UpdateCreatedProjects(int userId, int tableId, string Name)
+        {
+            int? modifiedId = -1;
+            var res=from p in _projectContext.UserDefinedProjects
+                    where p.Id == tableId
+                    select p;
+            if (res.Any())
+            {
+                var project =res.First();
+                project.ProjectName = Name;
+                modifiedId = project.Id;
+            }
+            else
+            {
+                UserDefinedProjectModel projectModel = new UserDefinedProjectModel();
+                projectModel.Id = GetLastID() + 1;
+                projectModel.ProjectName = Name;
+                projectModel.ProductId = 1;
+                projectModel.UserId = userId;
+                _projectContext.Add(projectModel);
+                modifiedId = projectModel.Id;
+            }
+            _projectContext.SaveChanges();
+            return modifiedId;
+        }
 
 
         private List<ValuesModel>? GetValuesForProject(int Id)
@@ -118,11 +158,11 @@ namespace Kamran_Portfolio.Controllers
 
         private List<ColumnModel>? GetColumnsForProject(int Id)
         {
-            var res=from col in _projectContext.Categorizing_Columns
-                    where col.UserDefinedProjectId == Id 
-                    select col;
-            if(res.Any()) {return res.ToList(); }
-            else {return null;}
+            var res = from col in _projectContext.Categorizing_Columns
+                      where col.UserDefinedProjectId == Id
+                      select col;
+            if (res.Any()) { return res.ToList(); }
+            else { return null; }
         }
 
 
@@ -165,6 +205,22 @@ namespace Kamran_Portfolio.Controllers
                 return res.ToList<ProductItemsModel>();
             }
             return null;
+        }
+        private int GetLastID()
+        {
+            var res = from l in _projectContext.UserDefinedProjects
+                      select l.Id;
+            return res.Max();
+        }
+
+        private UserInfo? GetUserInSession()
+        {
+            string? jsonUser = _contex.HttpContext.Session.GetString("user");
+            if (jsonUser != null && jsonUser.Length > 0)
+            {
+                return JsonConvert.DeserializeObject<UserInfo>(jsonUser);
+            }
+            else { return null; }
         }
     }
 }

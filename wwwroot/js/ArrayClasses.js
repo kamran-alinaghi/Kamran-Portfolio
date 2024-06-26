@@ -58,29 +58,36 @@ export class RowContent {
     }
 }
 
+class DataChangeVerification {
+    Columns;
+    Rows;
+    Values;
+    constructor() {
+        this.Columns = false;
+        this.Rows = false;
+        this.Values = false;
+    }
+    SetToFalse() {
+        this.Columns = false;
+        this.Rows = false;
+        this.Values = false;
+    }
+}
 
 
 
 export class TabelContent {
-    KeyString;
+    TableName;
+    TableId;
+    userId;
     ColumnList;
     RowList;
-    IsDataChanged = {
-        Columns: false,
-        Rows: false,
-        Values: false,
-        SetToFalse(){
-            this.Columns = false;
-            this.Rows = false;
-            this.Values = false;
-        }
-    }
+    IsDataChanged = new DataChangeVerification();
     constructor() {
         this.ColumnList = [new ColumnContent("+/", false)];
         this.RowList = [new RowContent("+/", true, 0)];
-        //this.RowList = [new RowContent("s1", true, 0), new RowContent("+/", true, 0)];
-        //this.RowList[0].RemoveProperty(0);
-        this.KeyString = "Member Name";
+        this.TableName = "Member Name";
+        this.TableId = 0;
     }
 
     /**
