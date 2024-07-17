@@ -48,4 +48,15 @@
         public bool Checked { get; set; }
         public double NumVal { get; set; }
     }
+
+    public enum TableNames
+    {
+        Column,
+        Row, 
+        Values,
+        UserDefinedProjects,
+        ProductItems,
+        Users,
+        Products
+    }
 }

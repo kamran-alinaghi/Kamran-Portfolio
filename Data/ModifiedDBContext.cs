@@ -11,8 +11,15 @@ namespace Kamran_Portfolio.Data
             .AddJsonFile("appsettings.json")
             .Build();
 
-            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development")) { optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioContext")); }
-            else { optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioServer")); }
+            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development")) 
+            { 
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioContext"));
+                //optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioServer"));
+            }
+            else 
+            { 
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioServer")); 
+            }
         }
     }
 }

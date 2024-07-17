@@ -41,12 +41,11 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public IActionResult Index(string username, string password)
         {
-            UserInfo user = GetUserFromDB(username, password);
+            UserInfo? user = GetUserFromDB(username, password);
             if (user != null && user.Id > 0)
             {
                 RedirectOptions redirectOptions = GetRedirectSession();
                 SetUserInSession(user);
-                RetriveAndSaveAllData(user);
                 return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
             }
             else
@@ -117,10 +116,7 @@ namespace Kamran_Portfolio.Controllers
 
 
 
-        private void RetriveAndSaveAllData(UserInfo user)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         private void SetRedirectSession(RedirectOptions redirectOptions)
         {
@@ -172,21 +168,11 @@ namespace Kamran_Portfolio.Controllers
 
         private UserInfo? GetUserFromDB(string _username, string _password)
         {
-            List<UserInfo> users = new List<UserInfo>();
-
             var res = from l in ctext.UserInfo
                       where l.Email == _username && l.Password == _password
                       select l;
 
-            foreach (var item in res)
-            {
-                users.Add(item);
-            }
-
-            if (users.Count > 0 && users.Count < 2)
-            {
-                return users[0];
-            }
+            if (res.Any()) { return res.First(); }
             else { return null; }
         }
     }

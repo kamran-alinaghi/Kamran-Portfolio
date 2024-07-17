@@ -12,6 +12,7 @@ const valueLabel = document.getElementById("value-label");
 const saveProjectButton = document.getElementById("save-project-button");
 const selectOptions = document.getElementById("select-options");
 const projectNameTextBox = document.getElementById("tBox");
+const test = document.getElementById("test");
 
 var CreatedProjects = [];
 var DBcolumns = [];
@@ -170,17 +171,21 @@ function ChangeProjectName(event) {
 }
 
 function InitializeProjectsOptions(selectedIndex = 0) {
+    CreatedProjects = [];
     $.post("/categorizingapi/CreatedProjects",
         JSON.stringify({ "Id": userId }),
         function (data, status) {
             let str = "";
-            CreatedProjects = JSON.parse(data);
-            for (let i = 0; i < CreatedProjects.length; i++) {
-                str += '<option value="' + CreatedProjects[i].Id + '">' + CreatedProjects[i].ProjectName + '</option>';
+            if (data != "null") {
+                CreatedProjects = JSON.parse(data);
+                for (let i = 0; i < CreatedProjects.length; i++) {
+                    str += '<option value="' + CreatedProjects[i].Id + '">' + CreatedProjects[i].ProjectName + '</option>';
+                }
             }
-            str += '<option value="0">New Project</option>';
+            str += '<option value="0">New</option>';
             selectOptions.innerHTML = str;
-            $('#select-options').val(CreatedProjects[selectedIndex].Id);
+            const tempId = CreatedProjects.length > 0 ? CreatedProjects[selectedIndex].Id : 0;
+            $('#select-options').val(tempId);
             $('#select-options').change();
         });
 }
@@ -196,6 +201,7 @@ function ChangeProject(event) {
         else {
             tableContent = new myArrayData.TabelContent();
             tableContent.userId = userId;
+            tableContent.TableId = CreatedProjects.length + 1;
             RefreshTable();
         }
     }
@@ -236,15 +242,18 @@ function GetValuesFromDB(Id) {
 function SetDBdata(c, data) {
     switch (c) {
         case 'c':
-            DBcolumns = JSON.parse(data);
+            if (data != "null") { DBcolumns = JSON.parse(data); }
+            else { DBcolumns = []; }
             tableContent.IsDataChanged.Columns = true;
             break;
         case 'r':
-            DBrows = JSON.parse(data);
+            if (data != "null") { DBrows = JSON.parse(data); }
+            else { DBrows = []; }
             tableContent.IsDataChanged.Rows = true;
             break;
         case 'v':
-            DBvalues = JSON.parse(data);
+            if (data != "null") { DBvalues = JSON.parse(data); }
+            else { DBvalues = []; }
             tableContent.IsDataChanged.Values = true;
             break;
     }
@@ -295,8 +304,10 @@ function SendPUTrequest() {
         type: 'PUT',
         data: JSON.stringify(tableContent),
         success: function (result) {
-            alert(result);
             InitializeProjectsOptions(result - 1);
+        },
+        error: function (ajaxContext) {
+            //test.innerHTML = ajaxContext.responseText;
         }
     });
 }
