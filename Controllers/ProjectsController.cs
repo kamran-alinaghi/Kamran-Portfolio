@@ -31,7 +31,10 @@ namespace Kamran_Portfolio.Controllers
             return View(user);
         }
 
-
+        public IActionResult TableTest()
+        {
+            return View();
+        }
 
 
 
