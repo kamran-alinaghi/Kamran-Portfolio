@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Download_Files\ASW.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.16">
@@ -39,6 +43,13 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\_EmptyLayout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Download_Files\ASW.xlsx">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

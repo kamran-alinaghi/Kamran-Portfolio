@@ -25,7 +25,7 @@ deleteButton.onclick = function (e) { return DeleteData(e.target); };
 saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
 selectOptions.onchange = function (e) { return ChangeProject(e); }
 projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
-downloadBtn.onchange = function () { return Download("~/lib/Files/AWS.xlx"); };
+downloadBtn.onclick = function () { return Download("https://kamran-portfolio.com/lib/files/ASW.xlsx"); };
 
 let tableContent = new myArrayData.TabelContent();
 let IsSaved = true;
