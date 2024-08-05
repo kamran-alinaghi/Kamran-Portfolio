@@ -21,12 +21,12 @@
 '.styled-table thead th {' +
 'background: linear-gradient(to right, #00b09b, #96c93d);' +
 'border-bottom: 1px solid #ddd;' +
-'padding: 5px;' +
+'padding: 0.5vh 0.3vw;' +
 'color: #ffffff;' +
-'font-size: 16px;' +
-'text-transform: uppercase;' +
-'min-width: 100px;}' +
+'font-size: 100%;' +
+'width: 12.5%;' +
+'text-transform: uppercase;}' +
 '.styled-table th: first-child,.styled-table td: first-child {border-left: none;}'+
 '.styled-table th: last-child,.styled-table td: last-child {border-right: none;}' +
-'.styled-table input{border: none;padding: 12px 10%;outline: none;background-color: inherit; min-width: 20px; width:80%;}' +
+'.styled-table input{border: none;padding: 12px 10%;outline: none;background-color: inherit; width:80%;}' +
 '.styled-table input:focus{background-color: #a0d2fa;}</style>';

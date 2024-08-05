@@ -1,18 +1,32 @@
 ﻿@model Kamran_Portfolio.Models.UserInfo
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
+    void red()
+    {
+        
+    }
 }
 <head>
     <link rel="stylesheet" href="~/css/CategorizingStyle.css" asp-append-version="true" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="http://kamran-alinaghi.ca/js/list.js"></script>
 </head>
 
 <h1>Welcome @Html.DisplayFor(model => model.Name)</h1>
+
+
+<div style="margin:50px 10px;">
+    <h4>Implementation Team:</h4>
+    <ul>
+        <li><em><b>Dr. Hasan Fattahi Nafchi</b></em></li>
+        <li><em><b>Ahmad Fattahi Nafchi</b></em></li>
+    </ul>
+    <h6>Developed with Kamran Alinaghi</h6>
+    <button id="download-btn" type="button">Download Excle File</button>
+    <iframe id="my_iframe" style="display:none;"></iframe>
+</div>
 <div id="project-selector" class="project-selector">
     <label id="select-optins-label" class="select-optins-label" for="select-options">Choose a project</label>
     <select id="select-options" name="select-options" class="select-options">
-
     </select>
 </div>
 <div id="project-name-textBox" class="project-name-textBox">

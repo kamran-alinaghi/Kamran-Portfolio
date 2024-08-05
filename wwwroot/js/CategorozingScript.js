@@ -13,6 +13,7 @@ const saveProjectButton = document.getElementById("save-project-button");
 const selectOptions = document.getElementById("select-options");
 const projectNameTextBox = document.getElementById("tBox");
 const test = document.getElementById("test");
+const downloadBtn = document.getElementById("download-btn");
 
 var CreatedProjects = [];
 var DBcolumns = [];
@@ -24,6 +25,7 @@ deleteButton.onclick = function (e) { return DeleteData(e.target); };
 saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
 selectOptions.onchange = function (e) { return ChangeProject(e); }
 projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
+downloadBtn.onchange = function () { return Download("~/lib/Files/AWS.xlx"); };
 
 let tableContent = new myArrayData.TabelContent();
 let IsSaved = true;
@@ -366,6 +368,10 @@ function DeleteData(elem) {
         RefreshTable();
     }
 }
+
+function Download(url) {
+    document.getElementById('my_iframe').src = url;
+};
 
 
 
