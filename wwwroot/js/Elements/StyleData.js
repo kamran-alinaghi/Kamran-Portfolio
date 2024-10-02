@@ -1,5 +1,5 @@
 ﻿export const tableStyle = '<style>.styled-table {'+
-'width:100%;height:100%;'+
+'width:100%;'+
 'border-collapse: separate;'+
 'border-spacing: 0;'+
 'margin: 25px 0;' +
@@ -24,7 +24,6 @@
 'padding: 0.5vh 0.3vw;' +
 'color: #ffffff;' +
 'font-size: 100%;' +
-'width: 12.5%;' +
 'text-transform: uppercase;}' +
 '.styled-table th: first-child,.styled-table td: first-child {border-left: none;}'+
 '.styled-table th: last-child,.styled-table td: last-child {border-right: none;}' +

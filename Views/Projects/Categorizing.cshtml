@@ -1,10 +1,6 @@
 ﻿@model Kamran_Portfolio.Models.UserInfo
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
-    void red()
-    {
-        
-    }
 }
 <head>
     <link rel="stylesheet" href="~/css/CategorizingStyle.css" asp-append-version="true" />
@@ -30,7 +26,7 @@
     </select>
 </div>
 <div id="project-name-textBox" class="project-name-textBox">
-    <label for="tBox">New Project Name: </label>
+    <label for="tBox">Project Name: </label>
     <input id="tBox" name="tBox" type="text" />
 </div>
 
@@ -47,11 +43,15 @@
 </table>
 <div id="save-container" class="save-container">
     <button id="save-project-button" class="save-project-button">Save Project</button>
+    <button id="calculate-button-ward">Calculate Ward</button>
+    <button id="calculate-button-avg">Calculate Average</button>
 </div>
 
-<p id="test">
+<div id="result-table" class="result-table">
 
-</p>
+</div>
+
+
 
 <div id="overal" style="visibility:hidden;z-index:1">
     <div id="overal-black" class="overal-black"></div>

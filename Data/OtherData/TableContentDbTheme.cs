@@ -1,4 +1,6 @@
-﻿namespace Kamran_Portfolio.Data.OtherData
+﻿using Kamran_Portfolio.Models.Categorizing;
+
+namespace Kamran_Portfolio.Data.OtherData
 {
     public class TableContentDbTheme
     {
@@ -27,26 +29,6 @@
             this.Rows = false;
             this.Values = false;
         }
-    }
-
-    public class ColumnContent
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public bool nOrQ { get; set; }
-    }
-
-    public class RowContent
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<RowProperties> Properties { get; set; }
-    }
-
-    public class RowProperties
-    {
-        public bool Checked { get; set; }
-        public double NumVal { get; set; }
     }
 
     public enum TableNames

@@ -1,5 +1,7 @@
-﻿export class ColumnContent {
-    Id = 0;
+﻿import { CategorizingProjectModel } from "./Models/UserDefinedProjectModel.js";
+
+export class ColumnContent {
+    //Id;
     Title;
     nOrQ;
     /**
@@ -10,7 +12,7 @@
     constructor(titleStr, nOrQBool, id = 0) {
         this.Title = titleStr;
         this.nOrQ = nOrQBool;
-        this.Id = id;
+        //this.Id = id;
     }
 }
 
@@ -29,7 +31,7 @@ export class RowProperties {
 }
 
 export class RowContent {
-    Id = 0;
+    //Id;
     Name;
     Properties;
     /**
@@ -39,7 +41,7 @@ export class RowContent {
      * @param {number} num
      */
     constructor(nameString, checked, num, id = 0) {
-        this.Id = id;
+        //this.Id = id;
         this.Name = nameString;
         this.Properties = [new RowProperties(checked, num)];
     }
@@ -83,11 +85,24 @@ export class TabelContent {
     ColumnList;
     RowList;
     IsDataChanged = new DataChangeVerification();
-    constructor() {
-        this.ColumnList = [new ColumnContent("+/", false)];
-        this.RowList = [new RowContent("+/", true, 0)];
+    /**
+     * 
+     * @param {CategorizingProjectModel} project
+     */
+    constructor(project = null) {
+        if (project == null) {
+            this.ColumnList = [new ColumnContent("+/", false)];
+            this.RowList = [new RowContent("+/", true, 0)];
+            this.TableId = "0";
+            this.userId = 0;
+        }
+        else {
+            this.ColumnList = project.ColumnList;
+            this.RowList = project.RowList;
+            this.TableId = project._id;
+            this.userId = project.UserId;
+        }
         this.TableName = "Member Name";
-        this.TableId = 0;
     }
 
     /**
@@ -189,3 +204,167 @@ export class TabelContent {
         }
     }
 }
+
+export class AddingSequence {
+    AddToGroup;
+    SelectedGroup;
+
+    constructor() {
+        this.AddToGroup = [0];
+        this.AddToGroup.pop();
+        this.SelectedGroup = [0];
+        this.SelectedGroup.pop();
+    }
+}
+
+export class Member {
+    id;
+    Name;
+    Properties;
+    /**
+     * 
+     * @param {number} id
+     */
+    constructor(id = null) {
+        this.id = id;
+        this.Name = "";
+        this.Properties = [0];
+        this.Properties.pop();
+    }
+}
+
+export class Members {
+    Members;
+    constructor() {
+        this.Members = [new Member(null)];
+        this.Members.pop();
+    }
+
+    /**
+     * 
+     * @param {Members} compare
+     * @param {string} method
+     * @returns
+     */
+    CompareWith(compare, method) {
+        const sampleArr1 = this.GetProperties(method);
+        const sampleArr2 = compare.GetProperties(method);
+
+        const sum = this.#CompareArrays(sampleArr1, sampleArr2);
+        return Math.sqrt(sum);
+    }
+
+    /**
+     * 
+     * @param {string?} method
+     * @returns
+     */
+    GetProperties(method) {
+        let result = [0];
+        result.pop();
+
+        if (this.Members.length > 1) {
+            switch (method) {
+                case 'ward':
+                    result = this.#CompareArraysWard();
+                    break;
+                case 'avg':
+                    result = this.#CompareArraysAvrg();
+                    break;
+                default:
+                    throw new Error("Please specify the method");
+                    break;
+            }
+        }
+        else {
+            result = this.Members[0].Properties;
+        }
+        return result;
+    }
+
+    /**
+     * 
+     * @param {number[]} array1
+     * @param {number[]} array2
+     * @returns
+     */
+    #CompareArrays(array1, array2) {
+        let result = 0;
+        if (array1.length != array2.length) {
+            throw new Error("Length doesn't match:\nFirst array length: " + array1.length + "\nSecond array length: " + array2.length);
+        }
+        else {
+            for (let i = 0; i < array1.length; i++) {
+                result += Math.pow((array1[i] - array2[i]), 2);
+            }
+        }
+        return result;
+    }
+
+    #CompareArraysWard() {
+        let result = [0];
+        result.pop();
+        const pairList = GetPairList(this.Members);
+        for (let i = 0; i < this.Members[0].Properties.length; i++) {
+            let tempSum = 0;
+            for (let j = 0; j < pairList.length; j++) {
+                tempSum += Math.pow((this.Members[pairList[j].X].Properties[i] - this.Members[pairList[j].Y].Properties[i]), 2);
+            }
+            result.push(tempSum / pairList.length);
+        }
+        //alert(JSON.stringify(result));
+        return result;
+    }
+
+    #CompareArraysAvrg() {
+        let result = [0];
+        result.pop();
+
+    }
+
+    GetIds() {
+        const result = [0];
+        result.pop();
+        if (this.Members.length > 0) {
+            for (let i = 0; i < this.Members.length; i++) {
+                result.push(this.Members[i].id);
+            }
+        }
+        else {
+            return null;
+        }
+        return result;
+    }
+}
+
+export class Point {
+    X;
+    Y;
+    /**
+     * 
+     * @param {number} x
+     * @param {number} y
+     */
+    constructor(x, y) {
+        this.X = x;
+        this.Y = y;
+    }
+}
+
+/**
+ * 
+ * @param {any[]} array
+ * @returns
+ */
+export function GetPairList(array) {
+    const result = [new Point(0, 0)];
+    result.pop();
+    for (let i = 0; i < array.length - 1; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+            result.push(new Point(i, j));
+        }
+    }
+    return result;
+}
+
+

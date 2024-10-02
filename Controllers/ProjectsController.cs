@@ -57,10 +57,6 @@ namespace Kamran_Portfolio.Controllers
 
         private UserInfo? GetUserInSession()
         {
-            if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development"))
-            {
-                return new UserInfo(3, "testUser");
-            }
             string? jsonUser = _contex.HttpContext.Session.GetString("user");
             if (jsonUser != null && jsonUser.Length > 0)
             {

@@ -1,4 +1,7 @@
 ﻿import * as myArrayData from "./ArrayClasses.js";
+import { UserDefinedProjectModel, CategorizingProjectModel } from "./Models/UserDefinedProjectModel.js";
+import { Table } from "./Elements/TableElement.js";
+import { FirstTable, DiffFormula } from "./Functions.js";
 
 //alert("kamValue");
 const table = document.getElementById("table");
@@ -12,27 +15,34 @@ const valueLabel = document.getElementById("value-label");
 const saveProjectButton = document.getElementById("save-project-button");
 const selectOptions = document.getElementById("select-options");
 const projectNameTextBox = document.getElementById("tBox");
-const test = document.getElementById("test");
 const downloadBtn = document.getElementById("download-btn");
+const calcBtnWard = document.getElementById("calculate-button-ward");
+const calcBtnAvg = document.getElementById("calculate-button-avg");
+const resultTable = document.getElementById("result-table");
 
-var CreatedProjects = [];
-var DBcolumns = [];
-var DBrows = [];
-var DBvalues = [];
+var ProjectList = [new CategorizingProjectModel()];
+ProjectList.pop();
+var selectedTableIndex = 0;
+let tableContent = new myArrayData.TabelContent();
+
+
 overalBlack.onclick = function (e) { return ShowInputDialog(e); };
 saveButton.onclick = function (e) { return SaveButtonOveral(e); };
 deleteButton.onclick = function (e) { return DeleteData(e.target); };
 saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
-selectOptions.onchange = function (e) { return ChangeProject(e); }
+selectOptions.onchange = function () { return ChangeProject(selectOptions); }
 projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
 downloadBtn.onclick = function () { return Download("https://kamran-portfolio.com/lib/files/ASW.xlsx"); };
+calcBtnWard.onclick = function () { return CalculationActions('ward'); };
+calcBtnAvg.onclick = function () { return CalculationActions('avg'); };
 
-let tableContent = new myArrayData.TabelContent();
-let IsSaved = true;
+function CalculationActions(methodStr) {
+    FirstTable(resultTable, tableContent);
+    DiffFormula(methodStr);
+}
 
 
 InitializeProjectsOptions();
-RefreshTable();
 
 function RefreshTable() {
     let str = "";
@@ -172,146 +182,110 @@ function ChangeProjectName(event) {
     tableContent.TableName = event.target.value;
 }
 
-function InitializeProjectsOptions(selectedIndex = 0) {
-    CreatedProjects = [];
-    $.post("/categorizingapi/CreatedProjects",
-        JSON.stringify({ "Id": userId }),
+function InitializeProjectsOptions(selectedIndex = "") {
+    ProjectList.length = 0;
+    $.post("/categorizingapi/ListOfProjectsInMongoDB",
+        JSON.stringify({ "_id": userId }),
         function (data, status) {
-            let str = "";
-            if (data != "null") {
-                CreatedProjects = JSON.parse(data);
-                for (let i = 0; i < CreatedProjects.length; i++) {
-                    str += '<option value="' + CreatedProjects[i].Id + '">' + CreatedProjects[i].ProjectName + '</option>';
+            if (status == "success") {
+                let str = "";
+                if (data != "null") {
+                    ProjectList = JSON.parse(data);
+                    ProjectList.push(new CategorizingProjectModel());
+                    ProjectList[ProjectList.length - 1].ProjectName = "New";
+                    for (let i = 0; i < ProjectList.length; i++) {
+                        str += '<option value="' + ProjectList[i]._id + '">' + ProjectList[i].ProjectName + '</option>';
+                    }
                 }
+                selectOptions.innerHTML = str;
+                let ind = -1;
+                if (ProjectList.length > 0) {
+                    ind = selectOptions.options.length - 1
+                    for (let i = 0; i < selectOptions.options.length; i++) {
+                        if (selectOptions.options[i].value == selectedIndex) {
+                            ind = i;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    ind = 0;
+                }
+                selectOptions.options[ind].selected = 'selected';
+                for (let i = 0; i < ProjectList.length; i++) {
+                    if (ProjectList[i]._id == selectOptions.value) {
+                        selectedTableIndex = i;
+                        break;
+                    }
+                }
+                ChangeProject(selectOptions);
             }
-            str += '<option value="0">New</option>';
-            selectOptions.innerHTML = str;
-            const tempId = CreatedProjects.length > 0 ? CreatedProjects[selectedIndex].Id : 0;
-            $('#select-options').val(tempId);
-            $('#select-options').change();
+
         });
 }
-
-function ChangeProject(event) {
-    if (!IsSaved) {
-        alert("Not Saved!");
+/**
+ * 
+ * @param {HTMLSelectElement} element
+ */
+function ChangeProject(element) {
+    if (ProjectList.length < 1) {
+        ProjectList.push(new CategorizingProjectModel());
+        ProjectList[0].UserId = userId;
+        selectedTableIndex = 0;
     }
     else {
-        if (event.target.value > 0) {
-            GetDataOfProject(event.target.value);
-        }
-        else {
-            tableContent = new myArrayData.TabelContent();
-            tableContent.userId = userId;
-            tableContent.TableId = CreatedProjects.length + 1;
-            RefreshTable();
+        selectedTableIndex = ProjectList.length - 1;
+        for (let i = 0; i < ProjectList.length; i++) {
+            if (ProjectList[i]._id == element.value) {
+                selectedTableIndex = i;
+                break;
+            }
         }
     }
-}
-
-async function GetDataOfProject(Id) {
-    GetColumnsFromDB(Id);
-    GetRowsFromDB(Id);
-    GetValuesFromDB(Id);
-}
-
-function GetColumnsFromDB(Id) {
-
-    $.post("/categorizingapi/Columns",
-        JSON.stringify({ "Id": Id }),
-        function (data, status) {
-            SetDBdata('c', data);
-        });
-
-}
-
-function GetRowsFromDB(Id) {
-    $.post("/categorizingapi/Rows",
-        JSON.stringify({ "Id": Id }),
-        function (data, status) {
-            SetDBdata('r', data);
-        });
-}
-
-function GetValuesFromDB(Id) {
-    $.post("/categorizingapi/Values",
-        JSON.stringify({ "Id": Id }),
-        function (data, status) {
-            SetDBdata('v', data);
-        });
-}
-
-function SetDBdata(c, data) {
-    switch (c) {
-        case 'c':
-            if (data != "null") { DBcolumns = JSON.parse(data); }
-            else { DBcolumns = []; }
-            tableContent.IsDataChanged.Columns = true;
-            break;
-        case 'r':
-            if (data != "null") { DBrows = JSON.parse(data); }
-            else { DBrows = []; }
-            tableContent.IsDataChanged.Rows = true;
-            break;
-        case 'v':
-            if (data != "null") { DBvalues = JSON.parse(data); }
-            else { DBvalues = []; }
-            tableContent.IsDataChanged.Values = true;
-            break;
+    if (element.value.length > 0) {
+        projectNameTextBox.value = ProjectList[selectedTableIndex].ProjectName;
+        tableContent = new myArrayData.TabelContent(ProjectList[selectedTableIndex]);
+        RefreshTable();
     }
-    if (tableContent.IsDataChanged.Columns && tableContent.IsDataChanged.Rows && tableContent.IsDataChanged.Values) {
-        tableContent.IsDataChanged.SetToFalse();
-        StoreDataToTableContent();
+    else {
+        tableContent = new myArrayData.TabelContent(ProjectList[0]);
+        tableContent.userId = userId;
+        tableContent.TableId = ProjectList.length + 1;
+        RefreshTable();
     }
+
 }
 
-function StoreDataToTableContent() {
-    tableContent = new myArrayData.TabelContent();
-    tableContent.TableName = CreatedProjects[selectOptions.value - 1].ProjectName;
-    projectNameTextBox.value = tableContent.TableName;
-    tableContent.TableId = CreatedProjects[selectOptions.value - 1].Id;
-    tableContent.userId = userId;
-    for (let i = 0; i < DBcolumns.length; i++) {
-        tableContent.AddColumn(DBcolumns[i].ColumnName, DBcolumns[i].IsBoolean, DBcolumns[i].Id);
-    }
-    for (let i = 0; i < DBrows.length; i++) {
-        tableContent.AddRow(DBrows[i].RowName, DBrows[i].Id);
-    }
-    for (let i = 0; i < tableContent.RowList.length - 1; i++) {
-        for (let j = 0; j < tableContent.RowList[i].Properties.length; j++) {
-            tableContent.RowList[i].Properties[j] = FindAndSetValues(i, j);
-        }
-    }
-    RefreshTable();
-}
 
-function FindAndSetValues(rowIndex, columnIndex) {
-    for (let i = 0; i < DBvalues.length; i++) {
-        if (DBvalues[i].RowId == tableContent.RowList[rowIndex].Id && DBvalues[i].ColumnId == tableContent.ColumnList[columnIndex].Id) {
-            return new myArrayData.RowProperties(tableContent.ColumnList[columnIndex].nOrQ, DBvalues[i].Value);
-        }
-    }
-    return new myArrayData.RowProperties(false, 0);
-}
 
 function SaveButtonFunction(event) {
+    saveProjectButton.disabled = true;
     SendPUTrequest();
     //retrieve all data again
     //set to new project index
 }
 
 function SendPUTrequest() {
+    MatchData();
     $.ajax({
-        url: "/categorizingapi/PutDataToDb",
+        url: "/categorizingapi/UpdateProjectInMongoDB",
         type: 'PUT',
-        data: JSON.stringify(tableContent),
+        data: JSON.stringify(ProjectList[selectedTableIndex]),
         success: function (result) {
-            InitializeProjectsOptions(result - 1);
+            ProjectList[selectedTableIndex]._id = result;
+            InitializeProjectsOptions(ProjectList[selectedTableIndex]._id);
+            saveProjectButton.disabled = false;
         },
         error: function (ajaxContext) {
             //test.innerHTML = ajaxContext.responseText;
         }
     });
+}
+function MatchData() {
+    ProjectList[selectedTableIndex].UserId = userId;
+    ProjectList[selectedTableIndex].ProjectName = projectNameTextBox.value;
+    ProjectList[selectedTableIndex].RowList = tableContent.RowList;
+    ProjectList[selectedTableIndex].ColumnList = tableContent.ColumnList;
 }
 
 function SaveButtonOveral(e) {

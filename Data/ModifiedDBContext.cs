@@ -13,8 +13,8 @@ namespace Kamran_Portfolio.Data
 
             if (String.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development")) 
             { 
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioContext"));
-                //optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioServer"));
+                //optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioContext"));
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Kamran_PortfolioServer"));
             }
             else 
             { 
