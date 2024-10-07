@@ -107,6 +107,10 @@ namespace Kamran_Portfolio.Controllers
             return RedirectToAction(redirectOptions.View, redirectOptions.Controller);
         }
 
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
 
 
 
@@ -116,7 +120,6 @@ namespace Kamran_Portfolio.Controllers
 
 
 
-        
 
         private void SetRedirectSession(RedirectOptions redirectOptions)
         {

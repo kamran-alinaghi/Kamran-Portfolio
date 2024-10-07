@@ -90,7 +90,7 @@ function GetRows() {
             str += '<td><input type="text" value="' + tableContent.RowList[i].Name + '" class="editable-cell" data-index="r-' + i + '*n"/></td>';
             for (let j = 0; j < tableContent.RowList[i].Properties.length; j++) {
                 if (tableContent.RowList[i].Properties[j].Checked) {
-                    str += '<td><input class="editable-cell" type="checkbox"/ data-index="r-' + i + '*' + j + '" ' + (tableContent.RowList[i].Properties[j].NumVal != 0 ? ' checked' : '') + '></td>';
+                    str += '<td><input class="editable-cell" type="checkbox" data-index="r-' + i + '*' + j + '" ' + (tableContent.RowList[i].Properties[j].NumVal != 0 ? ' checked' : '') + '></td>';
                 }
                 else {
                     str += '<td><input class="editable-cell" type="text" data-index="r-' + i + "*" + j + '" value="' + (tableContent.RowList[i].Properties[j].NumVal == 0 ? "" : tableContent.RowList[i].Properties[j].NumVal) + '"/></td>';
@@ -168,7 +168,7 @@ function UpdateTableData(e) {
             tableContent.RowList[rowIndex].Properties[columnIndex].NumVal = e.target.checked ? 1 : 0;
         }
         else {
-            tableContent.RowList[rowIndex].Properties[columnIndex].NumVal = parseInt(e.target.value);
+            tableContent.RowList[rowIndex].Properties[columnIndex].NumVal = parseFloat(e.target.value);
             if (isNaN(tableContent.RowList[rowIndex].Properties[columnIndex].NumVal)) {
                 e.target.style.backgroundColor = "red";
                 alert("Wrong input!");

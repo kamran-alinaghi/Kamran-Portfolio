@@ -34,6 +34,23 @@ namespace Kamran_Portfolio.Controllers
             return View(user);
         }
 
+        public IActionResult TechnicalAnalysis()
+        {
+            UserInfo? user = GetUserInSession();
+            if (user == null || user.Id < 1)
+            {
+                SetRedirectSession(new RedirectOptions("TechnicalAnalysis", "Projects"));
+                return RedirectToAction("IndexRedirect", "User");
+            }
+            if (user.Id == 1) {
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("NotAuthorized", "User");
+            }
+        }
+
         public IActionResult TableTest()
         {
             return View();
