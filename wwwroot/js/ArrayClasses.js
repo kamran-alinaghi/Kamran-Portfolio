@@ -247,37 +247,32 @@ export class Members {
      * @returns
      */
     CompareWith(compare, method) {
-        const sampleArr1 = this.GetProperties(method);
-        const sampleArr2 = compare.GetProperties(method);
+        if (method == "ward") {
+            const sampleArr1 = this.GetWardProperties();
+            const sampleArr2 = compare.GetWardProperties();
 
-        const sum = this.#CompareArrays(sampleArr1, sampleArr2);
-        return Math.sqrt(sum);
-    }
-
-    /**
-     * 
-     * @param {string?} method
-     * @returns
-     */
-    GetProperties(method) {
-        let result = [0];
-        result.pop();
-
-        if (this.Members.length > 1) {
-            switch (method) {
-                case 'ward':
-                    result = this.#CompareArraysWard();
-                    break;
-                case 'avg':
-                    result = this.#CompareArraysAvrg();
-                    break;
-                default:
-                    throw new Error("Please specify the method");
-                    break;
-            }
+            const sumDiff = this.#CompareArrays(sampleArr1, sampleArr2);
+            return Math.sqrt(sumDiff);
         }
         else {
-            result = this.Members[0].Properties;
+            const tempMembers = new Members();
+            tempMembers.Members = this.Members.concat(compare.Members);
+            const pairList = GetPairList(tempMembers.Members);
+            let sum = 0;
+            for (let i = 0; i < pairList.length; i++) {
+                const sampleArr1 = tempMembers.Members[pairList[i].X].Properties;
+                const sampleArr2 = tempMembers.Members[pairList[i].Y].Properties;
+                sum += this.#CompareArrays(sampleArr1, sampleArr2);
+            }
+            sum = sum / pairList.length;
+            return Math.sqrt(sum);
+        }
+    }
+    
+    GetWardProperties() {
+        let result = this.Members[0].Properties;
+        if (this.Members.length > 1) {
+            result = this.#CompareArraysWard();
         }
         return result;
     }

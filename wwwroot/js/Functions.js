@@ -71,11 +71,10 @@ export function FirstTable(element, tableContent) {
  * @param {string} methodString
  */
 export function DiffFormula(methodString) {
-    while (AllInstances.length>1) {
+    while (AllInstances.length > 1) {
         const result = FindClosestMembers(AllInstances, methodString);
         AddToSequence(AllInstances, result);
         RearrangeInstances(AllInstances, result);
-        //alert(JSON.stringify(AllInstances));
     }
     DisplaySequence();
 }
@@ -92,7 +91,6 @@ function FindClosestMembers(memberList, method) {
     const pairList = GetPairList(memberList);
     let minValue = 0;
     let minIndex = -1;
-    
     for (let i = 0; i < pairList.length; i++) {
         const tempValue = memberList[pairList[i].X].CompareWith(memberList[pairList[i].Y], method);
         if (i == 0) {
@@ -104,6 +102,8 @@ function FindClosestMembers(memberList, method) {
             minIndex = i;
         }
     }
+
+
 
     if (minIndex > -1) {
         return pairList[minIndex];
