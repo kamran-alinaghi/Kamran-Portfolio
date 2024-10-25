@@ -14,15 +14,21 @@ AllInstances.pop();
 
 
 
-const sequence = [new AddingSequence()];
-sequence.pop();
+const WardSequence = [new AddingSequence()];
+WardSequence.pop();
+const AvgSequence = [new AddingSequence()];
+AvgSequence.pop();
 
 /**
  * 
  * @param {HTMLElement} element
  * @param {TabelContent} tableContent
  */
-export function FirstTable(element, tableContent) {
+export function FirstTable(tableContent) {
+    titleArray.length = 0;
+    AllInstances.length = 0;
+    virtualDataSet = new TableDataSet();
+
     const dataSet = new TableDataSet();
     titleArray = [tableContent.TableName];
 
@@ -63,7 +69,7 @@ export function FirstTable(element, tableContent) {
 
     //alert(JSON.stringify(AllInstances));
     const resTable = new Table("Result", dataSet);
-    element.innerHTML = resTable.ToHtmlObject();
+    //element.innerHTML += resTable.ToHtmlObject();
 }
 
 /**
@@ -72,11 +78,12 @@ export function FirstTable(element, tableContent) {
  */
 export function DiffFormula(methodString) {
     while (AllInstances.length > 1) {
-        const result = FindClosestMembers(AllInstances, methodString);
-        AddToSequence(AllInstances, result);
-        RearrangeInstances(AllInstances, result);
+        const firstCloseMember = FindClosestMembers(AllInstances, methodString);
+        const secondCloseMember = FindSecondClosestMember(AllInstances, methodString, firstCloseMember);
+        AddToSequence(AllInstances, firstCloseMember, secondCloseMember, methodString);
+        RearrangeInstances(AllInstances, firstCloseMember);
     }
-    DisplaySequence();
+    //DisplaySequence();
 }
 
 
@@ -106,11 +113,48 @@ function FindClosestMembers(memberList, method) {
 
 
     if (minIndex > -1) {
+        pairList[minIndex].Value = minValue;
         return pairList[minIndex];
     }
     else {
         return null;
     }
+}
+
+/**
+ * 
+ * @param {Members[]} memberList
+ * @param {string} method
+ * @param {Point} currentMembers
+ * @returns
+ */
+function FindSecondClosestMember(memberList, method, currentMembers) {
+    let minValue = 0;
+    let minIndex = -1;
+    let firstAssign = true;
+
+    for (let i = 0; i < memberList.length; i++) {
+        if (i != currentMembers.X && i != currentMembers.Y) {
+            const tempValue = memberList[currentMembers.X].CompareWith(memberList[i]);
+            if (firstAssign) {
+                minValue = tempValue;
+                minIndex = i;
+                firstAssign = false;
+            }
+            else {
+                if (tempValue < minValue) {
+                    minValue = tempValue;
+                    minIndex = i;
+                }
+            }
+        }
+    }
+    if (minIndex > -1) {
+        const resultPoint = new Point(currentMembers.X, minIndex);
+        resultPoint.Value = minValue;
+        return resultPoint;
+    }
+    else { return null; }
 }
 
 /**
@@ -148,26 +192,41 @@ function FindDiff(dataset) {
 /**
  * 
  * @param {Members[]} members
- * @param {Point} result
+ * @param {Point} firstCloseMember
+ * @param {Point?} secondCloseMember
+ * @param {string} methodString
  */
-function AddToSequence(members, result) {
+function AddToSequence(members, firstCloseMember, secondCloseMember, methodString) {
     const tempStep = new AddingSequence();
-    tempStep.SelectedGroup = members[result.Y].GetIds();
-    tempStep.AddToGroup = members[result.X].GetIds();
-    sequence.push(tempStep);
+    tempStep.SubGroup = members[firstCloseMember.Y].GetIds();
+    tempStep.MembersToAdd = members[firstCloseMember.X].GetIds();
+    tempStep.FirstDistance = firstCloseMember.Value;
+    if (secondCloseMember) {
+        tempStep.SecondOption = members[secondCloseMember.Y].GetIds();
+        tempStep.SecondDistance = secondCloseMember.Value;
+    }
+    if (methodString == "ward") { WardSequence.push(tempStep); }
+    else { AvgSequence.push(tempStep); }
 }
 
-
-function DisplaySequence() {
+/**
+ * 
+ * @param {AddingSequence[]} sequence
+ */
+function DisplaySequence(sequence) {
     let str = "";
     for (let i = 0; i < sequence.length; i++) {
         str += 'Stage ' + (i + 1).toString() + ': ';
-        str += GroupToString(sequence[i].SelectedGroup);
+        str += GroupToString(sequence[i].SubGroup);
         str += ' -> ';
-        str += GroupToString(sequence[i].AddToGroup);
+        str += GroupToString(sequence[i].MembersToAdd);
+        str += ' @' + sequence[i].FirstDistance;
+        str += ' Or: ';
+        str += GroupToString(sequence[i].SecondOption);
+        str += ' @' + sequence[i].SecondDistance;
         str += '\n';
     }
-    alert(str);
+    return str;
 
     function GroupToString(array) {
         let result = '[';
@@ -180,7 +239,51 @@ function DisplaySequence() {
     }
 }
 
+export function AlertSequence() {
+    let str = "Ward:\n" + DisplaySequence(WardSequence) + "\n";
+    str += "Avg:\n" + DisplaySequence(AvgSequence);
+    alert(str);
+}
 
+/**
+ * 
+ * @param {TabelContent} tableContent
+ */
+export function SiCalc(tableContent) {
+    SiCalculationFirstPhase(tableContent);
+    SiCalculationSecondPhase();
+}
+export function SiCalculationFirstPhase(tableContent) {
+    FirstTable(tableContent);
+    DiffFormula("ward");
+    FirstTable(tableContent);
+    DiffFormula("avg");
+    //AlertSequence();
+}
+
+function SiCalculationSecondPhase() {
+    const SiArrayWard = [0];
+    SiArrayWard.length = 0;
+    const SiArrayAvg = [0];
+    SiArrayAvg.length = 0;
+
+    for (let i = 0; i < WardSequence.length; i++) {
+        SiArrayWard.push(GetSi(WardSequence[i]));
+    }
+    for (let i = 0; i < AvgSequence.length; i++) {
+        SiArrayAvg.push(GetSi(AvgSequence[i]));
+    }
+    alert(JSON.stringify(SiArrayWard) + "\n" + JSON.stringify(SiArrayAvg));
+}
+
+/**
+ * 
+ * @param {AddingSequence} sequenceInstance
+ * @returns
+ */
+function GetSi(sequenceInstance) {
+    return (sequenceInstance.SecondDistance - sequenceInstance.FirstDistance) / Math.max(sequenceInstance.SecondDistance , sequenceInstance.FirstDistance);
+}
 
 
 

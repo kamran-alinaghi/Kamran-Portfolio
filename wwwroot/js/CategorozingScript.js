@@ -1,7 +1,7 @@
 ﻿import * as myArrayData from "./ArrayClasses.js";
 import { UserDefinedProjectModel, CategorizingProjectModel } from "./Models/UserDefinedProjectModel.js";
 import { Table } from "./Elements/TableElement.js";
-import { FirstTable, DiffFormula } from "./Functions.js";
+import { FirstTable, DiffFormula, SiCalc } from "./Functions.js";
 
 //alert("kamValue");
 const table = document.getElementById("table");
@@ -16,8 +16,7 @@ const saveProjectButton = document.getElementById("save-project-button");
 const selectOptions = document.getElementById("select-options");
 const projectNameTextBox = document.getElementById("tBox");
 const downloadBtn = document.getElementById("download-btn");
-const calcBtnWard = document.getElementById("calculate-button-ward");
-const calcBtnAvg = document.getElementById("calculate-button-avg");
+const calcBtnWard = document.getElementById("calculate-button");
 const resultTable = document.getElementById("result-table");
 
 var ProjectList = [new CategorizingProjectModel()];
@@ -33,12 +32,10 @@ saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
 selectOptions.onchange = function () { return ChangeProject(selectOptions); }
 projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
 downloadBtn.onclick = function () { return Download("https://kamran-portfolio.com/lib/files/ASW.xlsx"); };
-calcBtnWard.onclick = function () { return CalculationActions('ward'); };
-calcBtnAvg.onclick = function () { return CalculationActions('avg'); };
+calcBtnWard.onclick = function () { return CalculationActions(); };
 
-function CalculationActions(methodStr) {
-    FirstTable(resultTable, tableContent);
-    DiffFormula(methodStr);
+function CalculationActions() {
+    SiCalc(tableContent);
 }
 
 

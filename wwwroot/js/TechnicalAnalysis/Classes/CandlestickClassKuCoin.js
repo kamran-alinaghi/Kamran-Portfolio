@@ -37,6 +37,42 @@
     }
 }
 
+export class KLineFutureKuCoin {
+    openTime;
+    openPrice;
+    closePrice;
+    highPrice;
+    lowPrice;
+    tradingVolume;
+
+    /**
+     * 
+     * @param {string[]?} data
+     */
+    constructor(data) {
+        if (data) {
+            if (data.length !== 6) {
+                throw new Error('Invalid data length. Expected 12 elements.');
+            }
+
+            this.openTime = parseInt(data[0]);
+            this.openPrice = parseFloat(data[1]);
+            this.highPrice = parseFloat(data[2]);
+            this.lowPrice = parseFloat(data[3]);
+            this.closePrice = parseFloat(data[4]);
+            this.tradingVolume = parseFloat(data[5]);
+        }
+        else {
+            this.openTime = 0;
+            this.openPrice = 0;
+            this.closePrice = 0;
+            this.highPrice = 0;
+            this.lowPrice = 0;
+            this.tradingVolume = 0;
+        }
+    }
+}
+
 export class TechnicalAnalysis {
     SMA;
     EMA;

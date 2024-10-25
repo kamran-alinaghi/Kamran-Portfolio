@@ -1,11 +1,10 @@
 ﻿using Kamran_Portfolio.Data.TechnicalAnalysis.DataModels;
-using Kamran_Portfolio.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kamran_Portfolio.Data.TechnicalAnalysis.DataContexts
 {
-    public class BTC_TableDataContext: SuperBaseDBContext
+    public class KuCoinFutureSymbolsContext : SuperBaseDBContext
     {
-        public DbSet<BTC_Candles_KuCoin> BTC_KuCoin_DB { get; set; } = default!;
+        public DbSet<KuCoinFutureSymbols> KuCoin_Future_Symbols { get; set; } = default!;
     }
 }

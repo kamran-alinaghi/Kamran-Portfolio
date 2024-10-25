@@ -206,14 +206,20 @@ export class TabelContent {
 }
 
 export class AddingSequence {
-    AddToGroup;
-    SelectedGroup;
-
+    MembersToAdd;         //Members that are supposed to go to a subgroup
+    SubGroup;      //The subgroup that is selected to accept a member
+    FirstDistance;
+    SecondOption;
+    SecondDistance;
     constructor() {
-        this.AddToGroup = [0];
-        this.AddToGroup.pop();
-        this.SelectedGroup = [0];
-        this.SelectedGroup.pop();
+        this.MembersToAdd = [0];
+        this.MembersToAdd.pop();
+        this.SubGroup = [0];
+        this.SubGroup.pop();
+        this.SecondOption = [0];
+        this.SecondOption.pop();
+        this.FirstDistance = 0;
+        this.SecondDistance = 0;
     }
 }
 
@@ -335,6 +341,7 @@ export class Members {
 export class Point {
     X;
     Y;
+    Value;
     /**
      * 
      * @param {number} x
@@ -343,6 +350,7 @@ export class Point {
     constructor(x, y) {
         this.X = x;
         this.Y = y;
+        this.Value = 0;
     }
 }
 

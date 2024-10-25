@@ -23,6 +23,11 @@ namespace Kamran_Portfolio.Controllers
             return View();
         }
 
+        public IActionResult About()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -34,5 +39,15 @@ namespace Kamran_Portfolio.Controllers
             string res = "none";
             return res;
         }
+
+        public ActionResult Images(string id)
+        {
+            return base.File("~/Images/"+id, "image/jpeg");
+        }
+
+        //public ActionResult css(string id)
+        //{
+        //    return base.File("~/" + id, "WOFF/WOFF2");
+        //}
     }
 }
