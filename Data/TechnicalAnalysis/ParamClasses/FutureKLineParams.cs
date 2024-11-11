@@ -31,8 +31,8 @@ namespace Kamran_Portfolio.Data.TechnicalAnalysis.ParamClasses
             if (uinxT % 10 == 0) { uinxT = uinxT + 1; }
             granularity = 1;
             to = uinxT;
-            from = uinxT - (minuets * 90000); //Gets more data than we need to cover potential gap
-            if (startAt > from) { from = startAt + 1; }
+            from = startAt + 1; //Gets data from last time frame we had
+            //if (startAt > from) { from = startAt + 1; }
         }
     }
 }

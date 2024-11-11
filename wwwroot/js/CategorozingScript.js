@@ -5,6 +5,7 @@ import { FirstTable, DiffFormula, SiCalc } from "./Functions.js";
 
 //alert("kamValue");
 const table = document.getElementById("table");
+const nextTable = document.getElementById("next-table");
 const overal = document.getElementById("overal");
 const saveButton = document.getElementById("save-button");
 const deleteButton = document.getElementById("delete-button");
@@ -29,13 +30,17 @@ overalBlack.onclick = function (e) { return ShowInputDialog(e); };
 saveButton.onclick = function (e) { return SaveButtonOveral(e); };
 deleteButton.onclick = function (e) { return DeleteData(e.target); };
 saveProjectButton.onclick = function (e) { return SaveButtonFunction(e); }
-selectOptions.onchange = function () { return ChangeProject(selectOptions); }
+selectOptions.onchange = function () {
+    resultTable.innerText = "";
+    nextTable.innerHTML = "";
+    return ChangeProject(selectOptions);
+}
 projectNameTextBox.onchange = function (e) { return ChangeProjectName(e); }
 downloadBtn.onclick = function () { return Download("https://kamran-portfolio.com/lib/files/ASW.xlsx"); };
 calcBtnWard.onclick = function () { return CalculationActions(); };
 
 function CalculationActions() {
-    SiCalc(tableContent);
+    resultTable.innerText = SiCalc(tableContent, nextTable);
 }
 
 

@@ -87,16 +87,16 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string FutureCalculation()
         {
-            int timeframe = 10;
+            int timeframe = GetRequestBody<int>(); ;
             DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
             long end = dto.ToUnixTimeMilliseconds();
             if (end % 10 == 0) { end++; }
-            long start = end - 3 * timeframe * 60000;
+            long start = end - 5 * timeframe * 60000;
             IQueryable<KuCoinFutureKLineModel> futureCandles = from c in futureDB.KuCoin_Future_KLine_DB
                                                                where c.openTime > start && c.openTime <= end
                                                                select c;
             List<KuCoinFutureKLineModel> cand = futureCandles.ToList();
-            TechnicalAnalysisResultModel resultModel = new TechnicalAnalysisResultModel(cand);
+            TechnicalAnalysisResultModel resultModel = new TechnicalAnalysisResultModel(cand, timeframe);
             return Newtonsoft.Json.JsonConvert.SerializeObject(resultModel);
         }
 

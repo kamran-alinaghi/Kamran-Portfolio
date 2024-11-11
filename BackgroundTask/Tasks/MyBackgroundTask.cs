@@ -9,7 +9,7 @@ namespace Kamran_Portfolio.BackgroundTask.Tasks
         private KuCoinFutureKLineContext futureDB = new KuCoinFutureKLineContext();
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            long minutes = 60;
+            long minutes = 5;
             while (!stoppingToken.IsCancellationRequested)
             {
                 futureDB = new KuCoinFutureKLineContext();

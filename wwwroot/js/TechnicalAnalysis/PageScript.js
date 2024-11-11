@@ -58,11 +58,14 @@ function GetFutureAPI(startTime, endTime) {
 }
 
 function TestAPI() {
+    const val = 5;
     $.ajax({
         url: "/TechnicalAPIs/FutureCalculation",
         type: 'POST',
+        data: JSON.stringify(val),
         success: function (result) {
-            alert(result);
+            txt.innerText = result;
+            //alert(result);
         },
         error: function (ajaxContext) {
             alert(JSON.stringify(ajaxContext));

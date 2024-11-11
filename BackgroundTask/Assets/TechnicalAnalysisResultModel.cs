@@ -8,19 +8,21 @@ namespace Kamran_Portfolio.BackgroundTask.Assets
     {
         public long Id { get; set; }
         public double SMA { get; set; }
-        public double EMA { get; set; }
+        public double ShortEMA { get; set; }
+        public double LongEMA { get; set; }
         public double RSI { get; set; }
         public TechnicalMACD MACD { get; set; }
         public TechnicalBollingerBands BollingerBands { get; set; }
 
 
-        public TechnicalAnalysisResultModel(List<KuCoinFutureKLineModel> Candles)
+        public TechnicalAnalysisResultModel(List<KuCoinFutureKLineModel> Candles, int minutes)
         {
-            int minutes = Candles.Count / 3;
+            //int minutes = Candles.Count / 3;
             if (Candles.Count >= 3 * minutes)
             {
                 SMA = CalculateSMA(Candles, minutes);
-                EMA = CalculateEMA(Candles, minutes);
+                ShortEMA = CalculateEMA(Candles, minutes);
+                LongEMA= CalculateEMA(Candles, minutes * 5 / 2);
                 RSI = CalculateRSI(Candles, minutes);
                 MACD = CalculateMACD(Candles, minutes);
                 BollingerBands = CalculateBollingerBands(Candles, minutes);
@@ -48,6 +50,7 @@ namespace Kamran_Portfolio.BackgroundTask.Assets
             for (int i = Candles.Count - minutes; i < Candles.Count; i++) { result += Candles[i].closePrice; }
             return result / minutes;
         }
+
         private double CalculateEMA(List<KuCoinFutureKLineModel> Candles, int minutes)
         {
             double k = 2 / (minutes + 1);
@@ -57,6 +60,7 @@ namespace Kamran_Portfolio.BackgroundTask.Assets
 
             return ema;
         }
+
         private double CalculateRSI(List<KuCoinFutureKLineModel> Candles, int minutes)
         {
             double gains = 0;

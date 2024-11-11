@@ -9,14 +9,16 @@ titleArray.pop();
 let virtualDataSet = new TableDataSet(); //Only members without header. This variable changes during the proccess
 let categoryList = [new RowContent("", false)];
 categoryList.pop();
-const AllInstances = [new Members()];
+let AllInstances = [new Members()];
 AllInstances.pop();
+let ConstInstances = [new Members()]; //Stays the same all the process
+ConstInstances.pop();
 
 
 
-const WardSequence = [new AddingSequence()];
+let WardSequence = [new AddingSequence()];
 WardSequence.pop();
-const AvgSequence = [new AddingSequence()];
+let AvgSequence = [new AddingSequence()];
 AvgSequence.pop();
 
 /**
@@ -24,9 +26,10 @@ AvgSequence.pop();
  * @param {HTMLElement} element
  * @param {TabelContent} tableContent
  */
-export function FirstTable(tableContent) {
+export function FirstTable(tableContent, element) {
     titleArray.length = 0;
     AllInstances.length = 0;
+    ConstInstances.length = 0;
     virtualDataSet = new TableDataSet();
 
     const dataSet = new TableDataSet();
@@ -65,11 +68,14 @@ export function FirstTable(tableContent) {
         }
         AllInstances.push(new Members());
         AllInstances[i].Members.push(tempMember);
+        ConstInstances.push(new Members());
+        ConstInstances[i].Members.push(tempMember);
     }
-
-    //alert(JSON.stringify(AllInstances));
+    //alert(JSON.stringify(dataSet));
     const resTable = new Table("Result", dataSet);
-    //element.innerHTML += resTable.ToHtmlObject();
+    if (element) {
+        element.innerHTML = resTable.ToHtmlObject();
+    }
 }
 
 /**
@@ -174,18 +180,22 @@ function RearrangeInstances(instanceList, indexes) {
  * @param {TableDataSet} dataset
  */
 function FindDiff(dataset) {
+    const startIndex = 0;
     for (let i = 1; i < dataset.Row[0].Column.length; i++) {
-        let min = dataset.Row[1].Column[i];
-        for (let j = 0; j < dataset.Row.length; j++) {
+        let min = dataset.Row[startIndex].Column[i];
+        let max = min;
+        for (let j = startIndex; j < dataset.Row.length; j++) {
             if (dataset.Row[j].Column[i] < min) {
                 min = dataset.Row[j].Column[i];
             }
-        }
-        if (min > 0) {
-            for (let j = 0; j < dataset.Row.length; j++) {
-                dataset.Row[j].Column[i] -= min;
+            if (dataset.Row[j].Column[i] > max) {
+                max = dataset.Row[j].Column[i];
             }
         }
+        for (let j = startIndex; j < dataset.Row.length; j++) {
+            dataset.Row[j].Column[i] = 0.707 * (dataset.Row[j].Column[i] - min) / (max - min);
+        }
+        
     }
 }
 
@@ -249,14 +259,18 @@ export function AlertSequence() {
  * 
  * @param {TabelContent} tableContent
  */
-export function SiCalc(tableContent) {
-    SiCalculationFirstPhase(tableContent);
-    SiCalculationSecondPhase();
+export function SiCalc(tableContent, element) {
+    SiCalculationFirstPhase(tableContent, element);
+    let str = SiCalculationSecondPhase();
+    return str;
 }
-export function SiCalculationFirstPhase(tableContent) {
-    FirstTable(tableContent);
+export function SiCalculationFirstPhase(tableContent, element) {
+
+    WardSequence.length = 0;
+    AvgSequence.length = 0;
+    FirstTable(tableContent, element);
     DiffFormula("ward");
-    FirstTable(tableContent);
+    FirstTable(tableContent, null);
     DiffFormula("avg");
     //AlertSequence();
 }
@@ -273,7 +287,8 @@ function SiCalculationSecondPhase() {
     for (let i = 0; i < AvgSequence.length; i++) {
         SiArrayAvg.push(GetSi(AvgSequence[i]));
     }
-    alert(JSON.stringify(SiArrayWard) + "\n" + JSON.stringify(SiArrayAvg));
+    return 'WARD:\n' + ShowSiArray(WardSequence, SiArrayWard) + "\nAvarage Linkage:\n" + ShowSiArray(AvgSequence, SiArrayAvg);
+    //alert(JSON.stringify(SiArrayWard) + "\n" + JSON.stringify(SiArrayAvg));
 }
 
 /**
@@ -282,8 +297,44 @@ function SiCalculationSecondPhase() {
  * @returns
  */
 function GetSi(sequenceInstance) {
-    return (sequenceInstance.SecondDistance - sequenceInstance.FirstDistance) / Math.max(sequenceInstance.SecondDistance , sequenceInstance.FirstDistance);
+    const max = Math.max(sequenceInstance.SecondDistance, sequenceInstance.FirstDistance);
+    const diff = sequenceInstance.SecondDistance - sequenceInstance.FirstDistance;
+    if (max != 0) { return diff / max; }
+    else {
+        if (diff == 0) { return 0; }
+        else { return -1000; }
+    }
 }
+
+/**
+ * 
+ * @param {AddingSequence[]} sequence
+ * @param {number[]} result
+ * @returns
+ */
+
+function ShowSiArray(sequence, result) {
+    let str = '';
+    for (let i = 0; i < sequence.length; i++) {
+        str += ArrayToString(sequence[i].MembersToAdd) + ' & ' + ArrayToString(sequence[i].SubGroup) + ' Si: ' + result[i] + '\n';
+    }
+    const index = result.indexOf(Math.max(...result));
+    if (index > -1) { str += 'Max: ' + ArrayToString(sequence[index].MembersToAdd) + ' & ' + ArrayToString(sequence[index].SubGroup) + ' @ Si: ' + result[index] + '\n'; }
+    return str;
+}
+
+/**
+ * 
+ * @param {number[]} array
+ * @returns
+ */
+function ArrayToString(array) {
+    let result = '[';
+    for (let i = 0; i < array.length; i++) { result += ConstInstances[array[i]].Members[0].Name + (i < array.length - 1 ? ',' : ''); }
+    return result + ']';
+}
+
+
 
 
 
