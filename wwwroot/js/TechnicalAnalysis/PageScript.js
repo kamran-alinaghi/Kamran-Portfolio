@@ -8,13 +8,16 @@ btn.onclick = function () { return BtnActions(); };
 
 
 
-let count = 480;
+let count = Date.now();
+count = Math.floor(count / 60000) * 60000;
+count -= 600000;
 
 
 
 
 
 function BtnActions() {
+    count -= 300000;
     //GetFutureAPI(Math.floor((Date.now() - 12000000)), Math.floor(Date.now()));
     TestAPI();
 }
@@ -58,19 +61,27 @@ function GetFutureAPI(startTime, endTime) {
 }
 
 function TestAPI() {
-    const val = 5;
     $.ajax({
-        url: "/TechnicalAPIs/FutureCalculation",
-        type: 'POST',
-        data: JSON.stringify(val),
+        url: "/TechnicalAPIs/TestAPI",
+        type: 'GET',
         success: function (result) {
-            txt.innerText = result;
+            download(result, 'json.txt', 'text/plain');
+            let tttt = JSON.parse(result);
+            txt.innerText = tttt.length;
             //alert(result);
         },
         error: function (ajaxContext) {
             alert(JSON.stringify(ajaxContext));
         }
     });
+}
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], { type: contentType });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
 }
 
 /**

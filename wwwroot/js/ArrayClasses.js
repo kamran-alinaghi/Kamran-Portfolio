@@ -311,7 +311,7 @@ export class Members {
             for (let j = 0; j < pairList.length; j++) {
                 tempSum += Math.pow((this.Members[pairList[j].X].Properties[i] - this.Members[pairList[j].Y].Properties[i]), 2);
             }
-            result.push(tempSum / pairList.length);
+            result.push(Math.sqrt(tempSum / pairList.length));
         }
         //alert(JSON.stringify(result));
         return result;
@@ -368,6 +368,26 @@ export function GetPairList(array) {
         }
     }
     return result;
+}
+
+export class Cluster {
+    ClusterMembers;
+    AlternativeMembers;
+    /**
+     * 
+     * @param {number[]} inputArray
+     * @param {number[]} altArray
+     */
+    constructor(inputArray = [], altArray = []) {
+        this.ClusterMembers = inputArray;
+        this.AlternativeMembers = altArray;
+    }
+}
+
+export class List extends Array {
+    constructor() {
+        super();
+    }
 }
 
 

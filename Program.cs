@@ -19,7 +19,7 @@ builder.Services.AddSession(options => {
 #endregion
 
 #region Background Task
-builder.Services.AddHostedService<MyBackgroundTask>();
+//builder.Services.AddHostedService<MyBackgroundTask>();
 #endregion
 
 var app = builder.Build();

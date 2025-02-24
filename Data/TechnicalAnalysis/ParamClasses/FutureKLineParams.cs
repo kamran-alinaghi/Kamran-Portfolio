@@ -32,7 +32,6 @@ namespace Kamran_Portfolio.Data.TechnicalAnalysis.ParamClasses
             granularity = 1;
             to = uinxT;
             from = startAt + 1; //Gets data from last time frame we had
-            //if (startAt > from) { from = startAt + 1; }
         }
     }
 }

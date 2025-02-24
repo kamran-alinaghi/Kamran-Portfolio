@@ -51,10 +51,13 @@ namespace Kamran_Portfolio.Controllers
         [HttpGet]
         public string TestAPI()
         {
-            string str = client.GetStringAsync("https://api-futures.kucoin.com/api/v1/contracts/active").Result;
-            KuCoinAPIsResponseObject<FutureToken> result = new KuCoinAPIsResponseObject<FutureToken>(str);
-            var t = from c in result.data where c.baseCurrency == "ETH" select c;
-            return Newtonsoft.Json.JsonConvert.SerializeObject(result.data);
+            long start = 1734123660000;
+            //long start = 1735850660000;
+            long end = 1735851660000;
+            IQueryable<KuCoinFutureKLineModel> result = from data in futureDB.KuCoin_Future_KLine_DB 
+                                                        where data.openTime > start && data.openTime < end 
+                                                        select data;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(result);
         }
 
         [HttpGet]
@@ -87,16 +90,22 @@ namespace Kamran_Portfolio.Controllers
         [HttpPost]
         public string FutureCalculation()
         {
-            int timeframe = GetRequestBody<int>(); ;
-            DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
-            long end = dto.ToUnixTimeMilliseconds();
+            long now = GetRequestBody<long>();
+            int timeframe = 480;
+            //DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
+            long end = now - timeframe * 60000;
             if (end % 10 == 0) { end++; }
-            long start = end - 5 * timeframe * 60000;
+            long start = end - 6 * timeframe * 60000;
             IQueryable<KuCoinFutureKLineModel> futureCandles = from c in futureDB.KuCoin_Future_KLine_DB
                                                                where c.openTime > start && c.openTime <= end
                                                                select c;
             List<KuCoinFutureKLineModel> cand = futureCandles.ToList();
             TechnicalAnalysisResultModel resultModel = new TechnicalAnalysisResultModel(cand, timeframe);
+            IQueryable<KuCoinFutureKLineModel> lastCandles = from c in futureDB.KuCoin_Future_KLine_DB
+                                                             where c.openTime > (now - 30000) && c.openTime < (now + 30000)
+                                                             select c;
+            KuCoinFutureKLineModel? future = lastCandles.FirstOrDefault();
+            if (future != null) { resultModel.FuturePrice = future.closePrice; }
             return Newtonsoft.Json.JsonConvert.SerializeObject(resultModel);
         }
 

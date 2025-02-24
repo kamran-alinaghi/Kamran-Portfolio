@@ -1,6 +1,7 @@
 ﻿import { TableDataSet } from "./Elements/DataFormat.js";
 import { TabelContent, RowContent, RowProperties, AddingSequence, Members, Member, Point, GetPairList } from "./ArrayClasses.js";
 import { Table } from "./Elements/TableElement.js";
+import { FinalGrouping } from "./Grouping.js";
 
 
 
@@ -11,7 +12,7 @@ let categoryList = [new RowContent("", false)];
 categoryList.pop();
 let AllInstances = [new Members()];
 AllInstances.pop();
-let ConstInstances = [new Members()]; //Stays the same all the process
+let ConstInstances = [new Member()]; //Stays the same all the process
 ConstInstances.pop();
 
 
@@ -20,6 +21,8 @@ let WardSequence = [new AddingSequence()];
 WardSequence.pop();
 let AvgSequence = [new AddingSequence()];
 AvgSequence.pop();
+let maxResults = [new AddingSequence()];
+maxResults.pop();
 
 /**
  * 
@@ -42,7 +45,7 @@ export function FirstTable(tableContent, element) {
         dataSet.ColumnEditable.push(false);
     }
     dataSet.AddRow(titleArray);
-    for (let i = 0; i < tableContent.RowList.length; i++) {
+    for (let i = 0; i < tableContent.RowList.length - 1; i++) {
         const rowArray = [];
         rowArray.push(tableContent.RowList[i].Name);
         for (let j = 0; j < tableContent.RowList[i].Properties.length; j++) {
@@ -68,8 +71,7 @@ export function FirstTable(tableContent, element) {
         }
         AllInstances.push(new Members());
         AllInstances[i].Members.push(tempMember);
-        ConstInstances.push(new Members());
-        ConstInstances[i].Members.push(tempMember);
+        ConstInstances.push(tempMember);
     }
     //alert(JSON.stringify(dataSet));
     const resTable = new Table("Result", dataSet);
@@ -195,7 +197,6 @@ function FindDiff(dataset) {
         for (let j = startIndex; j < dataset.Row.length; j++) {
             dataset.Row[j].Column[i] = 0.707 * (dataset.Row[j].Column[i] - min) / (max - min);
         }
-        
     }
 }
 
@@ -260,14 +261,21 @@ export function AlertSequence() {
  * @param {TabelContent} tableContent
  */
 export function SiCalc(tableContent, element) {
+    WardSequence.length = 0;
+    AvgSequence.length = 0;
+    maxResults.length = 0;
     SiCalculationFirstPhase(tableContent, element);
-    let str = SiCalculationSecondPhase();
+    let str = '';
+    SiCalculationSecondPhase();
+    let groupToStart = maxResults[0];
+    if (GetSi(maxResults[1]) > GetSi(maxResults[0])) { groupToStart = maxResults[1]; }
+
+    str += "\nGroup To Start: [" + groupToStart.MembersToAdd.map((val) => { return ConstInstances[val].Name }) + '->' + groupToStart.SubGroup.map((val) => { return ConstInstances[val].Name }) +']';
+    str += '\n\n\n' + FinalGrouping(groupToStart, ConstInstances);
     return str;
 }
 export function SiCalculationFirstPhase(tableContent, element) {
 
-    WardSequence.length = 0;
-    AvgSequence.length = 0;
     FirstTable(tableContent, element);
     DiffFormula("ward");
     FirstTable(tableContent, null);
@@ -320,6 +328,7 @@ function ShowSiArray(sequence, result) {
     }
     const index = result.indexOf(Math.max(...result));
     if (index > -1) { str += 'Max: ' + ArrayToString(sequence[index].MembersToAdd) + ' & ' + ArrayToString(sequence[index].SubGroup) + ' @ Si: ' + result[index] + '\n'; }
+    maxResults.push(sequence[index]);
     return str;
 }
 
@@ -330,16 +339,22 @@ function ShowSiArray(sequence, result) {
  */
 function ArrayToString(array) {
     let result = '[';
-    for (let i = 0; i < array.length; i++) { result += ConstInstances[array[i]].Members[0].Name + (i < array.length - 1 ? ',' : ''); }
+    for (let i = 0; i < array.length; i++) { result += ConstInstances[array[i]].Name + (i < array.length - 1 ? ',' : ''); }
     return result + ']';
 }
 
-
-
-
-
-
-
-
-
-
+/**
+ * 
+ * @param {any[]} what
+ * @param {any[]} from
+ * @returns
+ */
+export function SubtractArray(what, from) {
+    let result = [];
+    for (let i = 0; i < from.length; i++) {
+        if (what.indexOf(from[i]) < 0) {
+            result.push(from[i]);
+        }
+    }
+    return result;
+}
